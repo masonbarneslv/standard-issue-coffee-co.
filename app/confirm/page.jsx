@@ -5,6 +5,34 @@ import { useSearchParams, useRouter } from "next/navigation";
 
 const TOP_PILL_COLOR = "#5f021f";
 
+/* ---------------- HELPERS ---------------- */
+
+// Capitalize each hyphen-separated word
+function formatLabel(value) {
+  if (!value) return "";
+  return value
+    .split("-")
+    .map(
+      (word) => word.charAt(0).toUpperCase() + word.slice(1)
+    )
+    .join("-");
+}
+
+// Convert size IDs to human-friendly labels
+function formatSize(value) {
+  if (value === "16oz") return "1 lb";
+  if (value === "2lb") return "2 lb";
+  return value;
+}
+
+// Capitalize single words (frequency)
+function capitalize(value) {
+  if (!value) return "";
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+/* ----------------------------------------- */
+
 export default function ConfirmPage() {
   return (
     <Suspense fallback={null}>
@@ -36,37 +64,41 @@ function ConfirmInner() {
           <b>{email}</b> and company inbox.
         </div>
 
-        {/* DETAILS CARD */}
+        {/* DETAILS */}
         <div style={styles.card}>
-          <div style={styles.row}><span>Roast</span><b>{roast}</b></div>
-          <div style={styles.row}><span>Size</span><b>{size}</b></div>
-          <div style={styles.row}><span>Frequency</span><b>{frequency}</b></div>
-          <div style={styles.row}><span>Estimated Price</span><b>${price}</b></div>
-          <div style={styles.row}><span>Email</span><b>{email}</b></div>
+          <div style={styles.row}>
+            <span>Roast</span>
+            <b>{formatLabel(roast)}</b>
+          </div>
+          <div style={styles.row}>
+            <span>Size</span>
+            <b>{formatSize(size)}</b>
+          </div>
+          <div style={styles.row}>
+            <span>Frequency</span>
+            <b>{capitalize(frequency)}</b>
+          </div>
+          <div style={styles.row}>
+            <span>Estimated Price</span>
+            <b>${price}</b>
+          </div>
+          <div style={styles.row}>
+            <span>Email</span>
+            <b>{email}</b>
+          </div>
         </div>
 
-        {/* ✅ FIXED EMAIL PIPELINE */}
+        {/* PIPELINE */}
         <div style={styles.pipelineCard}>
           <strong style={styles.pipelineTitle}>Email Pipeline (Demo)</strong>
 
-          <div style={styles.pipelineRow}>
-            <span>Queued</span>
-            <span>✓</span>
-          </div>
-          <div style={styles.pipelineRow}>
-            <span>Processed</span>
-            <span>✓</span>
-          </div>
-          <div style={styles.pipelineRow}>
-            <span>Dispatched</span>
-            <span>✓</span>
-          </div>
-          <div style={styles.pipelineRow}>
-            <span>Delivered</span>
-            <span>✓</span>
-          </div>
+          <div style={styles.pipelineRow}><span>Queued</span><span>✓</span></div>
+          <div style={styles.pipelineRow}><span>Processed</span><span>✓</span></div>
+          <div style={styles.pipelineRow}><span>Dispatched</span><span>✓</span></div>
+          <div style={styles.pipelineRow}><span>Delivered</span><span>✓</span></div>
         </div>
 
+        {/* ACTIONS */}
         <div style={styles.actions}>
           <button
             style={styles.outlineBtn}
@@ -89,6 +121,8 @@ function ConfirmInner() {
     </main>
   );
 }
+
+/* ---------------- STYLES ---------------- */
 
 const styles = {
   page: {
@@ -131,7 +165,6 @@ const styles = {
     marginBottom: 16,
     color: "#111",
   },
-
   card: {
     background: "#fff6ee",
     borderRadius: 18,
@@ -147,8 +180,6 @@ const styles = {
     justifyContent: "space-between",
     fontSize: 15,
   },
-
-  /* 🔥 FIXED PIPELINE */
   pipelineCard: {
     background: "#fff6ee",
     borderRadius: 18,
@@ -162,14 +193,12 @@ const styles = {
   pipelineTitle: {
     fontSize: 16,
     fontWeight: 800,
-    marginBottom: 4,
   },
   pipelineRow: {
     display: "flex",
     justifyContent: "space-between",
     fontSize: 15,
   },
-
   actions: {
     display: "flex",
     gap: 12,
