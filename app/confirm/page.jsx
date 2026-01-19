@@ -141,7 +141,7 @@ const styles = {
     display: "inline-block",
     padding: "6px 14px",
     borderRadius: 999,
-    background: TOP_PILL_COLOR,
+    background: "#5f021f",
     color: "#fff",
     fontSize: 12,
     fontWeight: 700,
@@ -158,7 +158,7 @@ const styles = {
     marginBottom: 14,
   },
   banner: {
-    background: "#eef6f0",
+    background: "#ffffff",
     border: "1px solid #cce3d3",
     padding: 12,
     borderRadius: 12,
@@ -166,7 +166,7 @@ const styles = {
     color: "#111",
   },
   card: {
-    background: "#fff6ee",
+    background: "#ffffff",
     borderRadius: 18,
     padding: 18,
     border: "1px solid #e2c8c0",
@@ -181,7 +181,7 @@ const styles = {
     fontSize: 15,
   },
   pipelineCard: {
-    background: "#fff6ee",
+    background: "#ffffff",
     borderRadius: 18,
     padding: 18,
     border: "1px solid #e2c8c0",
