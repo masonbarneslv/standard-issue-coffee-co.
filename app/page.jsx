@@ -200,7 +200,7 @@ const styles = {
   border: "1px dashed #e2c8c0",
   borderRadius: 12,
   padding: 12,
-  background: "#ffffff",
+  background: "#d3d3d3",
   color: "#111",
 },
   muted: {
