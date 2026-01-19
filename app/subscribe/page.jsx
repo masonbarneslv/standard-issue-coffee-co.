@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 const ROASTS = [
   { id: "first-light", name: "First Light", note: "Light Roast" },
-  { id: "house-medium", name: "House Crafted Small Batch", note: "Medium Roast" },
+  { id: "house-medium", name: "House Crafted", note: "Medium Roast" },
   { id: "admirals-reserve", name: "Admiral’s Reserve", note: "Dark Roast" },
 ];
 
@@ -56,40 +56,16 @@ export default function SubscribePage() {
 
     setLoading(true);
 
-    try {
-      const res = await fetch("/api/subscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          roast,
-          size,
-          frequency,
-          price,
-          email: email.trim(),
-        }),
-      });
+    const qs = new URLSearchParams({
+      roast,
+      size,
+      frequency,
+      price: String(price),
+      email: email.trim(),
+      emailStatus: "sent_demo",
+    });
 
-      const json = await res.json();
-      if (!res.ok || !json.ok) {
-        setErrorMsg(json.error || "Something went wrong.");
-        setLoading(false);
-        return;
-      }
-
-      const qs = new URLSearchParams({
-        roast,
-        size,
-        frequency,
-        price: String(price),
-        email: email.trim(),
-        emailStatus: "sent_demo",
-      });
-
-      router.push(`/confirm?${qs.toString()}`);
-    } catch {
-      setErrorMsg("Network error. Please try again.");
-      setLoading(false);
-    }
+    router.push(`/confirm?${qs.toString()}`);
   }
 
   return (
@@ -113,7 +89,7 @@ export default function SubscribePage() {
                 style={styles.select}
               >
                 {ROASTS.map((r) => (
-                  <option key={r.id} value={r.id}>
+                  <option key={r.id} value={r.id} style={styles.option}>
                     {r.name} — {r.note}
                   </option>
                 ))}
@@ -128,7 +104,7 @@ export default function SubscribePage() {
                 style={styles.select}
               >
                 {SIZES.map((s) => (
-                  <option key={s.id} value={s.id}>
+                  <option key={s.id} value={s.id} style={styles.option}>
                     {s.label} — ${s.price}
                   </option>
                 ))}
@@ -143,7 +119,7 @@ export default function SubscribePage() {
                 style={styles.select}
               >
                 {FREQUENCIES.map((f) => (
-                  <option key={f.id} value={f.id}>
+                  <option key={f.id} value={f.id} style={styles.option}>
                     {f.label} — {Math.round(f.discount * 100)}% off
                   </option>
                 ))}
@@ -217,6 +193,7 @@ const styles = {
     color: "#8b0000",
   },
   subtitle: { margin: 0, opacity: 0.85 },
+
   card: {
     border: "1px solid rgba(139,0,0,.18)",
     borderRadius: 16,
@@ -224,28 +201,59 @@ const styles = {
     background: "#fff8f2",
     boxShadow: "0 10px 30px rgba(0,0,0,.08)",
   },
+
   form: { display: "grid", gap: 12 },
-  label: { fontWeight: 700, fontSize: 14, display: "grid", gap: 6 },
+
+  label: {
+    fontWeight: 700,
+    fontSize: 14,
+    display: "grid",
+    gap: 6,
+    color: "#1a1a1a",
+  },
+
   select: {
     padding: 12,
     borderRadius: 12,
     border: "1px solid rgba(139,0,0,.25)",
-    background: "#fff",
+    background: "#ffffff",
+    color: "#000000",
+    fontSize: 16,
   },
+
+  option: {
+    color: "#000000",
+    background: "#ffffff",
+  },
+
   input: {
     padding: 12,
     borderRadius: 12,
     border: "1px solid rgba(139,0,0,.25)",
-    background: "#fff",
+    background: "#ffffff",
+    color: "#000000",
+    fontSize: 16,
   },
+
   summary: {
     border: "1px dashed rgba(139,0,0,.3)",
     borderRadius: 12,
     padding: 12,
     background: "rgba(139,0,0,.04)",
   },
-  summaryRow: { display: "flex", justifyContent: "space-between" },
-  summaryNote: { fontSize: 12, opacity: 0.8, marginTop: 6 },
+
+  summaryRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    color: "#000000",
+  },
+
+  summaryNote: {
+    fontSize: 12,
+    opacity: 0.8,
+    marginTop: 6,
+  },
+
   error: {
     background: "rgba(139,0,0,.08)",
     border: "1px solid rgba(139,0,0,.3)",
@@ -254,6 +262,7 @@ const styles = {
     color: "#8b0000",
     fontWeight: 700,
   },
+
   button: {
     marginTop: 6,
     padding: "12px 14px",
@@ -262,7 +271,14 @@ const styles = {
     background: "#8b0000",
     color: "#f2ece6",
     fontWeight: 900,
+    fontSize: 16,
     cursor: "pointer",
   },
-  footer: { marginTop: 14, fontSize: 12, opacity: 0.8 },
+
+  footer: {
+    marginTop: 14,
+    fontSize: 12,
+    opacity: 0.8,
+    color: "#1a1a1a",
+  },
 };
