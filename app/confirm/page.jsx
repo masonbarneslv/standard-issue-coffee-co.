@@ -158,7 +158,7 @@ const styles = {
     marginBottom: 14,
   },
   banner: {
-    background: "#ffffff",
+    background: "#90ee90",
     border: "1px solid #cce3d3",
     padding: 12,
     borderRadius: 12,
