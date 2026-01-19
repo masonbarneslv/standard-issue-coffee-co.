@@ -32,7 +32,7 @@ function Loading() {
             padding: 22,
           }}
         >
-          Loading confirmation…
+          Loading…
         </div>
       </div>
     </main>
