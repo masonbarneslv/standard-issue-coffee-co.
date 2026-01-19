@@ -20,10 +20,6 @@ const FREQUENCIES = [
   { id: "monthly", label: "Monthly", discount: 0.05 },
 ];
 
-function isValidEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
 export default function SubscribePage() {
   const router = useRouter();
 
@@ -31,32 +27,30 @@ export default function SubscribePage() {
   const [size, setSize] = useState(SIZES[0].id);
   const [frequency, setFrequency] = useState(FREQUENCIES[1].id);
   const [email, setEmail] = useState("");
-
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  const selectedSize = useMemo(() => SIZES.find((s) => s.id === size), [size]);
-  const selectedFreq = useMemo(() => FREQUENCIES.find((f) => f.id === frequency), [frequency]);
+  const selectedSize = useMemo(
+    () => SIZES.find((s) => s.id === size),
+    [size]
+  );
+  const selectedFreq = useMemo(
+    () => FREQUENCIES.find((f) => f.id === frequency),
+    [frequency]
+  );
 
   const price = useMemo(() => {
     const base = selectedSize?.price ?? 0;
     const discount = selectedFreq?.discount ?? 0;
-    const final = base * (1 - discount);
-    return Math.round(final * 100) / 100;
+    return Math.round(base * (1 - discount) * 100) / 100;
   }, [selectedSize, selectedFreq]);
 
   async function onSubmit(e) {
     e.preventDefault();
     setErrorMsg("");
 
-    const trimmed = email.trim();
-
-    if (!trimmed) {
+    if (!email.trim()) {
       setErrorMsg("Please enter your email.");
-      return;
-    }
-    if (!isValidEmail(trimmed)) {
-      setErrorMsg("Please enter a valid email (example: you@email.com).");
       return;
     }
 
@@ -70,32 +64,16 @@ export default function SubscribePage() {
           roast,
           size,
           frequency,
-          price, // send it so server can include in previews
-          email: trimmed,
+          price,
+          email: email.trim(),
         }),
       });
 
       const json = await res.json();
-
       if (!res.ok || !json.ok) {
-        setErrorMsg(json?.error || "Something went wrong.");
+        setErrorMsg(json.error || "Something went wrong.");
         setLoading(false);
         return;
-      }
-
-      // Store previews locally so confirm page can show them (no long query strings)
-      try {
-        localStorage.setItem(
-          "demoEmailPayload",
-          JSON.stringify({
-            timestamp: json.timestamp,
-            ids: json.ids,
-            companyInbox: json.companyInbox,
-            previews: json.previews,
-          })
-        );
-      } catch {
-        // If storage fails, confirm page will still work without previews
       }
 
       const qs = new URLSearchParams({
@@ -103,12 +81,12 @@ export default function SubscribePage() {
         size,
         frequency,
         price: String(price),
-        email: trimmed,
-        emailStatus: json.emailStatus, // sent_demo
+        email: email.trim(),
+        emailStatus: "sent_demo",
       });
 
       router.push(`/confirm?${qs.toString()}`);
-    } catch (err) {
+    } catch {
       setErrorMsg("Network error. Please try again.");
       setLoading(false);
     }
@@ -121,7 +99,7 @@ export default function SubscribePage() {
           <div style={styles.badge}>Standard Issue Coffee Co</div>
           <h1 style={styles.title}>Subscription Signup</h1>
           <p style={styles.subtitle}>
-            Portfolio demo: simulates sending emails securely via a server API route.
+            Portfolio demo: simulates secure email delivery via server API.
           </p>
         </header>
 
@@ -129,7 +107,11 @@ export default function SubscribePage() {
           <form onSubmit={onSubmit} style={styles.form}>
             <label style={styles.label}>
               Roast
-              <select value={roast} onChange={(e) => setRoast(e.target.value)} style={styles.select}>
+              <select
+                value={roast}
+                onChange={(e) => setRoast(e.target.value)}
+                style={styles.select}
+              >
                 {ROASTS.map((r) => (
                   <option key={r.id} value={r.id}>
                     {r.name} — {r.note}
@@ -140,7 +122,11 @@ export default function SubscribePage() {
 
             <label style={styles.label}>
               Size
-              <select value={size} onChange={(e) => setSize(e.target.value)} style={styles.select}>
+              <select
+                value={size}
+                onChange={(e) => setSize(e.target.value)}
+                style={styles.select}
+              >
                 {SIZES.map((s) => (
                   <option key={s.id} value={s.id}>
                     {s.label} — ${s.price}
@@ -182,11 +168,11 @@ export default function SubscribePage() {
                 <b>${price.toFixed(2)}</b>
               </div>
               <div style={styles.summaryNote}>
-                Demo only — no payment is processed. Email is simulated server-side.
+                Demo only — no payment processed.
               </div>
             </div>
 
-            {errorMsg ? <div style={styles.error}>{errorMsg}</div> : null}
+            {errorMsg && <div style={styles.error}>{errorMsg}</div>}
 
             <button type="submit" style={styles.button} disabled={loading}>
               {loading ? "Submitting…" : "Confirm Subscription"}
@@ -195,7 +181,7 @@ export default function SubscribePage() {
         </section>
 
         <footer style={styles.footer}>
-          You can show employers the architecture: client form → API route → simulated emails → confirmation.
+          Client form → API route → simulated emails → confirmation page.
         </footer>
       </div>
     </main>
@@ -208,71 +194,75 @@ const styles = {
     display: "flex",
     justifyContent: "center",
     padding: 24,
-    background: "#0b0b0c",
-    color: "#f2f2f2",
+    background: "#f2ece6",
+    color: "#1a1a1a",
     fontFamily:
-      'ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial',
+      "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial",
   },
   shell: { width: "100%", maxWidth: 720 },
-  header: { marginBottom: 18 },
+  header: { marginBottom: 16 },
   badge: {
     display: "inline-block",
     padding: "6px 10px",
-    border: "1px solid rgba(255,255,255,.18)",
     borderRadius: 999,
+    background: "rgba(139,0,0,.1)",
+    border: "1px solid rgba(139,0,0,.25)",
+    color: "#8b0000",
+    fontWeight: 700,
     fontSize: 12,
-    letterSpacing: 0.4,
-    opacity: 0.9,
   },
-  title: { margin: "10px 0 6px", fontSize: 32, lineHeight: 1.1 },
-  subtitle: { margin: 0, opacity: 0.8 },
+  title: {
+    margin: "10px 0 6px",
+    fontSize: 34,
+    color: "#8b0000",
+  },
+  subtitle: { margin: 0, opacity: 0.85 },
   card: {
-    border: "1px solid rgba(255,255,255,.14)",
+    border: "1px solid rgba(139,0,0,.18)",
     borderRadius: 16,
     padding: 16,
-    background: "rgba(255,255,255,.03)",
+    background: "#fff8f2",
+    boxShadow: "0 10px 30px rgba(0,0,0,.08)",
   },
   form: { display: "grid", gap: 12 },
-  label: { display: "grid", gap: 6, fontSize: 14, opacity: 0.95 },
+  label: { fontWeight: 700, fontSize: 14, display: "grid", gap: 6 },
   select: {
     padding: 12,
     borderRadius: 12,
-    border: "1px solid rgba(255,255,255,.16)",
-    background: "#111114",
-    color: "#f2f2f2",
-    outline: "none",
+    border: "1px solid rgba(139,0,0,.25)",
+    background: "#fff",
   },
   input: {
     padding: 12,
     borderRadius: 12,
-    border: "1px solid rgba(255,255,255,.16)",
-    background: "#111114",
-    color: "#f2f2f2",
-    outline: "none",
+    border: "1px solid rgba(139,0,0,.25)",
+    background: "#fff",
   },
   summary: {
-    marginTop: 6,
-    border: "1px dashed rgba(255,255,255,.18)",
+    border: "1px dashed rgba(139,0,0,.3)",
     borderRadius: 12,
     padding: 12,
+    background: "rgba(139,0,0,.04)",
   },
   summaryRow: { display: "flex", justifyContent: "space-between" },
-  summaryNote: { marginTop: 6, fontSize: 12, opacity: 0.75 },
+  summaryNote: { fontSize: 12, opacity: 0.8, marginTop: 6 },
   error: {
-    border: "1px solid rgba(255,80,80,.35)",
-    background: "rgba(255,80,80,.10)",
+    background: "rgba(139,0,0,.08)",
+    border: "1px solid rgba(139,0,0,.3)",
     padding: 10,
     borderRadius: 12,
-    fontSize: 13,
+    color: "#8b0000",
+    fontWeight: 700,
   },
   button: {
+    marginTop: 6,
     padding: "12px 14px",
     borderRadius: 12,
-    border: "1px solid rgba(255,255,255,.16)",
-    background: "#f2ece6",
-    color: "#0b0b0c",
-    fontWeight: 800,
+    border: "none",
+    background: "#8b0000",
+    color: "#f2ece6",
+    fontWeight: 900,
     cursor: "pointer",
   },
-  footer: { marginTop: 14, fontSize: 12, opacity: 0.75 },
+  footer: { marginTop: 14, fontSize: 12, opacity: 0.8 },
 };
