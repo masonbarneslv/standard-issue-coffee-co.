@@ -107,10 +107,12 @@ export default function SubscribePage() {
             </select>
           </label>
 
-          <label style={styles.label}>
+         <label style={styles.label}>
             Email
             <input
               style={styles.input}
+              type="email"
+              required
               placeholder="you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
