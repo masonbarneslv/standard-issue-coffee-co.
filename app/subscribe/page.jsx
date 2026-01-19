@@ -216,7 +216,7 @@ const styles = {
     marginTop: 8,
     padding: "14px",
     borderRadius: 999,
-    background: "#5f021f",
+    background: "#8b0000",
     color: "#fff",
     fontSize: 16,
     fontWeight: 800,
