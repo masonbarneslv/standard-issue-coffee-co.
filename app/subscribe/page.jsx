@@ -41,14 +41,14 @@ export default function SubscribePage() {
     e.preventDefault();
 
     const subscription = {
-      roast: selectedRoast.name,
-      size: selectedSize.label,
-      frequency: selectedFrequency.label,
+      roast: selectedRoast?.name || "",
+      size: selectedSize?.label || "",
+      frequency: selectedFrequency?.label || "",
       price,
       email,
     };
 
-    console.log("Subscription (demo):", subscription);
+    console.log("Subscription:", subscription);
 
     const qs = new URLSearchParams({
       roast: subscription.roast,
@@ -56,7 +56,6 @@ export default function SubscribePage() {
       frequency: subscription.frequency,
       price: subscription.price,
       email: subscription.email,
-      emailStatus: "sent_demo",
     }).toString();
 
     router.push(`/confirm?${qs}`);
@@ -79,7 +78,7 @@ export default function SubscribePage() {
               <select
                 value={roast}
                 onChange={(e) => setRoast(e.target.value)}
-                style={styles.control}
+                style={styles.select}
               >
                 {ROASTS.map((r) => (
                   <option key={r.id} value={r.id} style={styles.option}>
@@ -93,7 +92,7 @@ export default function SubscribePage() {
               <select
                 value={size}
                 onChange={(e) => setSize(e.target.value)}
-                style={styles.control}
+                style={styles.select}
               >
                 {SIZES.map((s) => (
                   <option key={s.id} value={s.id} style={styles.option}>
@@ -107,7 +106,7 @@ export default function SubscribePage() {
               <select
                 value={frequency}
                 onChange={(e) => setFrequency(e.target.value)}
-                style={styles.control}
+                style={styles.select}
               >
                 {FREQUENCIES.map((f) => (
                   <option key={f.id} value={f.id} style={styles.option}>
@@ -128,18 +127,17 @@ export default function SubscribePage() {
                 placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                style={styles.control}
+                style={styles.input}
               />
-              <div style={styles.helper}>Demo only — no payment collected yet.</div>
             </Field>
 
             <div style={styles.summary}>
               <div style={styles.summaryTop}>
                 <span style={styles.summaryPill}>
-                  {selectedRoast.name} · {selectedSize.label}
+                  {selectedRoast?.name} · {selectedSize?.label}
                 </span>
                 <span style={styles.summaryMuted}>
-                  {selectedFrequency.label} delivery
+                  {selectedFrequency?.label} delivery
                 </span>
               </div>
 
@@ -147,7 +145,7 @@ export default function SubscribePage() {
                 <div style={styles.price}>
                   ${price} <span style={styles.per}>/ shipment</span>
                 </div>
-                <div style={styles.miniNote}>Cancel anytime (demo)</div>
+                <div style={styles.miniNote}>Manage or cancel anytime</div>
               </div>
             </div>
 
@@ -156,8 +154,7 @@ export default function SubscribePage() {
             </button>
 
             <div style={styles.footerNote}>
-              Tip: This page is a great portfolio demo. Next step is Stripe
-              Checkout + deployment.
+              Subscription details will appear on the next page.
             </div>
           </form>
         </section>
@@ -234,14 +231,13 @@ const styles = {
     letterSpacing: 0.3,
   },
 
-  // ✅ UPDATED: iOS Safari + WordPress in-app browser dropdown text fix
-  control: {
+  // ✅ SELECT (dropdown) — iOS Safari + WordPress app visibility fix
+  select: {
     width: "100%",
     padding: "12px 12px",
     fontSize: 16,
     borderRadius: 12,
     border: "1px solid rgba(0,0,0,0.18)",
-    outline: "none",
     backgroundColor: "#fff",
     color: "#1a1a1a",
     WebkitTextFillColor: "#1a1a1a",
@@ -250,9 +246,23 @@ const styles = {
     WebkitAppearance: "menulist-button",
   },
 
-  // ✅ NEW: force option text color too
   option: {
     color: "#1a1a1a",
+  },
+
+  // ✅ INPUT (email) — iOS Safari + WordPress app visibility fix
+  input: {
+    width: "100%",
+    padding: "12px 12px",
+    fontSize: 16,
+    borderRadius: 12,
+    border: "1px solid rgba(0,0,0,0.18)",
+    backgroundColor: "#fff",
+    color: "#1a1a1a",
+    WebkitTextFillColor: "#1a1a1a",
+    caretColor: "#1a1a1a",
+    opacity: 1,
+    outline: "none",
   },
 
   helper: {
