@@ -172,7 +172,7 @@ const styles = {
     marginBottom: 20,
   },
   card: {
-    background: "#fff6ee",
+    background: "#cbb6aa",
     borderRadius: 18,
     padding: 18,
     border: "1px solid #e2c8c0",
