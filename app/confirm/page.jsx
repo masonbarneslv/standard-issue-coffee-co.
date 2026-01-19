@@ -31,13 +31,12 @@ function ConfirmInner() {
         <h1 style={styles.title}>Subscription Confirmed</h1>
         <p style={styles.subtitle}>Portfolio demo — email is simulated.</p>
 
-        {/* ✅ TEXT COLOR FIXED */}
         <div style={styles.banner}>
           ✅ Confirmation email sent <strong>(demo)</strong> to{" "}
           <b>{email}</b> and company inbox.
         </div>
 
-        {/* ✅ TEXT COLOR FIXED */}
+        {/* DETAILS CARD */}
         <div style={styles.card}>
           <div style={styles.row}><span>Roast</span><b>{roast}</b></div>
           <div style={styles.row}><span>Size</span><b>{size}</b></div>
@@ -46,15 +45,26 @@ function ConfirmInner() {
           <div style={styles.row}><span>Email</span><b>{email}</b></div>
         </div>
 
-        {/* ✅ TEXT COLOR FIXED */}
-        <div style={styles.pipeline}>
-          <strong>Email Pipeline (Demo)</strong>
-          <ul style={{ marginTop: 8 }}>
-            <li>Queued ✓</li>
-            <li>Processed ✓</li>
-            <li>Dispatched ✓</li>
-            <li>Delivered ✓</li>
-          </ul>
+        {/* ✅ FIXED EMAIL PIPELINE */}
+        <div style={styles.pipelineCard}>
+          <strong style={styles.pipelineTitle}>Email Pipeline (Demo)</strong>
+
+          <div style={styles.pipelineRow}>
+            <span>Queued</span>
+            <span>✓</span>
+          </div>
+          <div style={styles.pipelineRow}>
+            <span>Processed</span>
+            <span>✓</span>
+          </div>
+          <div style={styles.pipelineRow}>
+            <span>Dispatched</span>
+            <span>✓</span>
+          </div>
+          <div style={styles.pipelineRow}>
+            <span>Delivered</span>
+            <span>✓</span>
+          </div>
         </div>
 
         <div style={styles.actions}>
@@ -113,8 +123,6 @@ const styles = {
     color: "#555",
     marginBottom: 14,
   },
-
-  /* 🔥 FIX: FORCE BLACK TEXT */
   banner: {
     background: "#eef6f0",
     border: "1px solid #cce3d3",
@@ -134,20 +142,32 @@ const styles = {
     marginBottom: 16,
     color: "#111",
   },
-
   row: {
     display: "flex",
     justifyContent: "space-between",
     fontSize: 15,
   },
 
-  pipeline: {
-    background: "#fff",
-    borderRadius: 14,
-    padding: 14,
+  /* 🔥 FIXED PIPELINE */
+  pipelineCard: {
+    background: "#fff6ee",
+    borderRadius: 18,
+    padding: 18,
     border: "1px solid #e2c8c0",
-    marginBottom: 18,
+    marginBottom: 20,
     color: "#111",
+    display: "grid",
+    gap: 10,
+  },
+  pipelineTitle: {
+    fontSize: 16,
+    fontWeight: 800,
+    marginBottom: 4,
+  },
+  pipelineRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    fontSize: 15,
   },
 
   actions: {
@@ -155,7 +175,6 @@ const styles = {
     gap: 12,
     flexWrap: "wrap",
   },
-
   primaryBtn: {
     flex: 1,
     padding: "14px",
@@ -166,7 +185,6 @@ const styles = {
     border: "none",
     cursor: "pointer",
   },
-
   outlineBtn: {
     flex: 1,
     padding: "14px",
