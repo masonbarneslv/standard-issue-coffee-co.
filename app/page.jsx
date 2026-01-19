@@ -155,7 +155,7 @@ const styles = {
     display: "inline-block",
     padding: "6px 14px",
     borderRadius: 999,
-    background: TOP_PILL_COLOR, // ONLY CHANGE
+    background: "#5f021f",
     color: "#fff",
     fontSize: 12,
     fontWeight: 700,
@@ -216,7 +216,7 @@ const styles = {
     marginTop: 8,
     padding: "14px",
     borderRadius: 999,
-    background: "#8b0000",
+    background: "#5f021f",
     color: "#fff",
     fontSize: 16,
     fontWeight: 800,
