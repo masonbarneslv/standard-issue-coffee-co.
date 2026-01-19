@@ -3,7 +3,6 @@
 import { Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
-// ONLY CHANGE ↓↓↓
 const TOP_PILL_COLOR = "#5f021f";
 
 export default function ConfirmPage() {
@@ -27,17 +26,18 @@ function ConfirmInner() {
   return (
     <main style={styles.page}>
       <div style={styles.container}>
-        {/* TOP PILL — ONLY COLOR CHANGED */}
         <div style={styles.badge}>Standard Issue Coffee Co</div>
 
         <h1 style={styles.title}>Subscription Confirmed</h1>
         <p style={styles.subtitle}>Portfolio demo — email is simulated.</p>
 
+        {/* ✅ TEXT COLOR FIXED */}
         <div style={styles.banner}>
           ✅ Confirmation email sent <strong>(demo)</strong> to{" "}
           <b>{email}</b> and company inbox.
         </div>
 
+        {/* ✅ TEXT COLOR FIXED */}
         <div style={styles.card}>
           <div style={styles.row}><span>Roast</span><b>{roast}</b></div>
           <div style={styles.row}><span>Size</span><b>{size}</b></div>
@@ -46,9 +46,10 @@ function ConfirmInner() {
           <div style={styles.row}><span>Email</span><b>{email}</b></div>
         </div>
 
+        {/* ✅ TEXT COLOR FIXED */}
         <div style={styles.pipeline}>
           <strong>Email Pipeline (Demo)</strong>
-          <ul>
+          <ul style={{ marginTop: 8 }}>
             <li>Queued ✓</li>
             <li>Processed ✓</li>
             <li>Dispatched ✓</li>
@@ -96,7 +97,7 @@ const styles = {
     display: "inline-block",
     padding: "6px 14px",
     borderRadius: 999,
-    background: TOP_PILL_COLOR, // ONLY CHANGE
+    background: TOP_PILL_COLOR,
     color: "#fff",
     fontSize: 12,
     fontWeight: 700,
@@ -112,13 +113,17 @@ const styles = {
     color: "#555",
     marginBottom: 14,
   },
+
+  /* 🔥 FIX: FORCE BLACK TEXT */
   banner: {
     background: "#eef6f0",
     border: "1px solid #cce3d3",
     padding: 12,
     borderRadius: 12,
     marginBottom: 16,
+    color: "#111",
   },
+
   card: {
     background: "#fff6ee",
     borderRadius: 18,
@@ -127,24 +132,30 @@ const styles = {
     display: "grid",
     gap: 10,
     marginBottom: 16,
+    color: "#111",
   },
+
   row: {
     display: "flex",
     justifyContent: "space-between",
     fontSize: 15,
   },
+
   pipeline: {
     background: "#fff",
     borderRadius: 14,
     padding: 14,
     border: "1px solid #e2c8c0",
     marginBottom: 18,
+    color: "#111",
   },
+
   actions: {
     display: "flex",
     gap: 12,
     flexWrap: "wrap",
   },
+
   primaryBtn: {
     flex: 1,
     padding: "14px",
@@ -155,6 +166,7 @@ const styles = {
     border: "none",
     cursor: "pointer",
   },
+
   outlineBtn: {
     flex: 1,
     padding: "14px",
