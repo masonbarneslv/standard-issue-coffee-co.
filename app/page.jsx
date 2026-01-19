@@ -172,7 +172,7 @@ const styles = {
     marginBottom: 20,
   },
   card: {
-    background: "#cbb6aa",
+    background: "#c7b3a8",
     borderRadius: 18,
     padding: 18,
     border: "1px solid #e2c8c0",
@@ -200,7 +200,7 @@ const styles = {
   border: "1px dashed #e2c8c0",
   borderRadius: 12,
   padding: 12,
-  background: "#fdf3ec",
+  background: "#ffffff",
   color: "#111",
 },
   muted: {
