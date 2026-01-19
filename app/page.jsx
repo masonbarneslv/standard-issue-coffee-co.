@@ -201,7 +201,7 @@ const styles = {
   borderRadius: 12,
   padding: 12,
   background: "#fdf3ec",
-+ color: "#111",
+  color: "#111",
 },
   muted: {
     fontSize: 12,
@@ -210,7 +210,7 @@ const styles = {
   price: {
   fontWeight: 800,
   fontSize: 18,
-+ color: "#111",
+  color: "#111",
 },
   button: {
     marginTop: 8,
