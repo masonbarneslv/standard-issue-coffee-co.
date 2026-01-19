@@ -1,6 +1,5 @@
-export const dynamic = "force-dynamic"; // 🔴 REQUIRED FIX FOR VERCEL
-
-"use client";
+"use client"; // 🔴 MUST BE FIRST LINE
+export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -18,7 +17,7 @@ export default function ConfirmPage() {
 
   const [step, setStep] = useState(0);
 
-  // Fake email pipeline animation (queued → sent)
+  // Fake email pipeline animation
   useEffect(() => {
     const timers = [
       setTimeout(() => setStep(1), 400),
@@ -34,9 +33,6 @@ export default function ConfirmPage() {
         <header style={styles.header}>
           <div style={styles.badge}>Standard Issue Coffee Co</div>
           <h1 style={styles.title}>Subscription Confirmed</h1>
-          <p style={styles.subtitle}>
-            Demo confirmation page (portfolio project)
-          </p>
 
           {emailStatus === "sent_demo" && (
             <div style={styles.banner}>
@@ -47,31 +43,18 @@ export default function ConfirmPage() {
         </header>
 
         <section style={styles.card}>
-          <div style={styles.row}>
-            <span>Roast</span>
-            <b>{roast}</b>
-          </div>
-          <div style={styles.row}>
-            <span>Size</span>
-            <b>{size}</b>
-          </div>
-          <div style={styles.row}>
-            <span>Frequency</span>
-            <b>{frequency}</b>
-          </div>
-          <div style={styles.row}>
-            <span>Estimated Price</span>
-            <b>{price !== "-" ? `$${Number(price).toFixed(2)}` : "-"}</b>
-          </div>
-          <div style={styles.row}>
-            <span>Email</span>
-            <b>{email}</b>
-          </div>
+          <Row label="Roast" value={roast} />
+          <Row label="Size" value={size} />
+          <Row label="Frequency" value={frequency} />
+          <Row
+            label="Estimated Price"
+            value={price !== "-" ? `$${Number(price).toFixed(2)}` : "-"}
+          />
+          <Row label="Email" value={email} />
         </section>
 
         <section style={styles.card}>
           <h2 style={styles.h2}>Email Pipeline (Demo)</h2>
-
           <PipelineRow label="Queued" active={step >= 1} />
           <PipelineRow label="Processed" active={step >= 2} />
           <PipelineRow label="Dispatched" active={step >= 3} />
@@ -79,7 +62,10 @@ export default function ConfirmPage() {
         </section>
 
         <div style={styles.actions}>
-          <button style={styles.btnGhost} onClick={() => router.push("/subscribe")}>
+          <button
+            style={styles.btnGhost}
+            onClick={() => router.push("/subscribe")}
+          >
             Edit Subscription
           </button>
           <button
@@ -94,6 +80,15 @@ export default function ConfirmPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+function Row({ label, value }) {
+  return (
+    <div style={styles.row}>
+      <span>{label}</span>
+      <b>{value}</b>
+    </div>
   );
 }
 
@@ -130,7 +125,6 @@ const styles = {
     fontSize: 12,
   },
   title: { margin: "10px 0 6px", fontSize: 32 },
-  subtitle: { margin: 0, opacity: 0.8 },
   banner: {
     marginTop: 12,
     padding: 12,
