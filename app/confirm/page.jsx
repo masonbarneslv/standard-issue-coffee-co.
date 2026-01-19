@@ -11,6 +11,7 @@ export default function ConfirmPage() {
   const frequency = params.get("frequency") || "";
   const price = params.get("price") || "";
   const email = params.get("email") || "";
+  const emailStatus = params.get("emailStatus") || "";
 
   return (
     <main style={styles.page}>
@@ -18,9 +19,14 @@ export default function ConfirmPage() {
         <header style={styles.header}>
           <div style={styles.badge}>Standard Issue Coffee Co</div>
           <h1 style={styles.title}>Subscription Confirmed</h1>
-          <p style={styles.subtitle}>
-            Your subscription details are below.
-          </p>
+          <p style={styles.subtitle}>Your subscription details are below.</p>
+
+          {emailStatus === "sent_demo" && (
+            <div style={styles.banner}>
+              ✅ Confirmation email sent (demo) to <b>{email}</b> and{" "}
+              <b>info@standardissuecoffeeco.com</b>
+            </div>
+          )}
         </header>
 
         <section style={styles.card}>
@@ -105,6 +111,19 @@ const styles = {
     color: "rgba(0,0,0,0.65)",
     fontSize: 16,
   },
+
+  // NEW: banner that matches your vibe
+  banner: {
+    marginTop: 12,
+    padding: "12px 14px",
+    borderRadius: 14,
+    background: "rgba(95, 2, 31, 0.08)",
+    border: "1px solid rgba(95, 2, 31, 0.18)",
+    color: "rgba(0,0,0,0.78)",
+    fontSize: 13,
+    lineHeight: 1.35,
+  },
+
   card: {
     background: "#ffffff",
     borderRadius: 18,
@@ -126,7 +145,7 @@ const styles = {
     letterSpacing: 0.3,
   },
 
-  // This makes the “value” look like your input boxes, without being editable.
+  // Makes the displayed email look like an input box (non-editable)
   controlLike: {
     width: "100%",
     padding: "12px 12px",
@@ -181,7 +200,7 @@ const styles = {
   },
   button: {
     marginTop: 6,
-    backgroundColor: "#5f021f", // SAME red as Standard Issue badge
+    backgroundColor: "#5f021f", // SAME red as badge
     color: "#ffffff",
     padding: "14px",
     width: "100%",
