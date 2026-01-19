@@ -113,7 +113,7 @@ export default function SubscribePage() {
               style={styles.input}
               type="email"
               required
-              placeholder="you@example.com"
+              placeholder="required"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
