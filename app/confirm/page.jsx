@@ -1,10 +1,17 @@
-"use client"; // 🔴 MUST BE FIRST LINE
-export const dynamic = "force-dynamic";
+"use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
 export default function ConfirmPage() {
+  return (
+    <Suspense fallback={<LoadingUI />}>
+      <ConfirmInner />
+    </Suspense>
+  );
+}
+
+function ConfirmInner() {
   const params = useSearchParams();
   const router = useRouter();
 
@@ -17,7 +24,6 @@ export default function ConfirmPage() {
 
   const [step, setStep] = useState(0);
 
-  // Fake email pipeline animation
   useEffect(() => {
     const timers = [
       setTimeout(() => setStep(1), 400),
@@ -33,6 +39,7 @@ export default function ConfirmPage() {
         <header style={styles.header}>
           <div style={styles.badge}>Standard Issue Coffee Co</div>
           <h1 style={styles.title}>Subscription Confirmed</h1>
+          <p style={styles.subtitle}>Portfolio demo — email is simulated.</p>
 
           {emailStatus === "sent_demo" && (
             <div style={styles.banner}>
@@ -62,12 +69,10 @@ export default function ConfirmPage() {
         </section>
 
         <div style={styles.actions}>
-          <button
-            style={styles.btnGhost}
-            onClick={() => router.push("/subscribe")}
-          >
+          <button style={styles.btnGhost} onClick={() => router.push("/subscribe")}>
             Edit Subscription
           </button>
+
           <button
             style={styles.btn}
             onClick={() =>
@@ -77,6 +82,21 @@ export default function ConfirmPage() {
           >
             Back to Website
           </button>
+        </div>
+      </div>
+    </main>
+  );
+}
+
+function LoadingUI() {
+  return (
+    <main style={styles.page}>
+      <div style={styles.shell}>
+        <div style={styles.card}>
+          <div style={{ opacity: 0.85, fontWeight: 800 }}>Loading confirmation…</div>
+          <div style={{ opacity: 0.6, marginTop: 8, fontSize: 13 }}>
+            Preparing subscription details.
+          </div>
         </div>
       </div>
     </main>
@@ -125,6 +145,7 @@ const styles = {
     fontSize: 12,
   },
   title: { margin: "10px 0 6px", fontSize: 32 },
+  subtitle: { margin: 0, opacity: 0.8 },
   banner: {
     marginTop: 12,
     padding: 12,
