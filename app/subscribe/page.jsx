@@ -16,49 +16,102 @@ const SIZES = [
 
 const FREQUENCIES = [
   { id: "weekly", label: "Weekly", discount: 0.15 },
-  { id: "biweekly", label: "Every 2 Weeks", discount: 0.1 },
+  { id: "biweekly", label: "Every 2 weeks", discount: 0.1 },
   { id: "monthly", label: "Monthly", discount: 0.05 },
 ];
+
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
 
 export default function SubscribePage() {
   const router = useRouter();
 
   const [roast, setRoast] = useState(ROASTS[0].id);
   const [size, setSize] = useState(SIZES[0].id);
-  const [frequency, setFrequency] = useState("monthly");
+  const [frequency, setFrequency] = useState(FREQUENCIES[1].id);
   const [email, setEmail] = useState("");
 
-  const selectedRoast = ROASTS.find((r) => r.id === roast);
-  const selectedSize = SIZES.find((s) => s.id === size);
-  const selectedFrequency = FREQUENCIES.find((f) => f.id === frequency);
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const selectedSize = useMemo(() => SIZES.find((s) => s.id === size), [size]);
+  const selectedFreq = useMemo(() => FREQUENCIES.find((f) => f.id === frequency), [frequency]);
 
   const price = useMemo(() => {
-    const discounted = selectedSize.price * (1 - selectedFrequency.discount);
-    return discounted.toFixed(2);
-  }, [selectedSize, selectedFrequency]);
+    const base = selectedSize?.price ?? 0;
+    const discount = selectedFreq?.discount ?? 0;
+    const final = base * (1 - discount);
+    return Math.round(final * 100) / 100;
+  }, [selectedSize, selectedFreq]);
 
-  function handleSubmit(e) {
+  async function onSubmit(e) {
     e.preventDefault();
+    setErrorMsg("");
 
-    const subscription = {
-      roast: selectedRoast?.name || "",
-      size: selectedSize?.label || "",
-      frequency: selectedFrequency?.label || "",
-      price,
-      email,
-    };
+    const trimmed = email.trim();
 
-    console.log("Subscription:", subscription);
+    if (!trimmed) {
+      setErrorMsg("Please enter your email.");
+      return;
+    }
+    if (!isValidEmail(trimmed)) {
+      setErrorMsg("Please enter a valid email (example: you@email.com).");
+      return;
+    }
 
-    const qs = new URLSearchParams({
-      roast: subscription.roast,
-      size: subscription.size,
-      frequency: subscription.frequency,
-      price: subscription.price,
-      email: subscription.email,
-    }).toString();
+    setLoading(true);
 
-    router.push(`/confirm?${qs}`);
+    try {
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          roast,
+          size,
+          frequency,
+          price, // send it so server can include in previews
+          email: trimmed,
+        }),
+      });
+
+      const json = await res.json();
+
+      if (!res.ok || !json.ok) {
+        setErrorMsg(json?.error || "Something went wrong.");
+        setLoading(false);
+        return;
+      }
+
+      // Store previews locally so confirm page can show them (no long query strings)
+      try {
+        localStorage.setItem(
+          "demoEmailPayload",
+          JSON.stringify({
+            timestamp: json.timestamp,
+            ids: json.ids,
+            companyInbox: json.companyInbox,
+            previews: json.previews,
+          })
+        );
+      } catch {
+        // If storage fails, confirm page will still work without previews
+      }
+
+      const qs = new URLSearchParams({
+        roast,
+        size,
+        frequency,
+        price: String(price),
+        email: trimmed,
+        emailStatus: json.emailStatus, // sent_demo
+      });
+
+      router.push(`/confirm?${qs.toString()}`);
+    } catch (err) {
+      setErrorMsg("Network error. Please try again.");
+      setLoading(false);
+    }
   }
 
   return (
@@ -66,269 +119,160 @@ export default function SubscribePage() {
       <div style={styles.shell}>
         <header style={styles.header}>
           <div style={styles.badge}>Standard Issue Coffee Co</div>
-          <h1 style={styles.title}>Coffee Subscription</h1>
+          <h1 style={styles.title}>Subscription Signup</h1>
           <p style={styles.subtitle}>
-            Small-batch roasted coffee, delivered on your schedule.
+            Portfolio demo: simulates sending emails securely via a server API route.
           </p>
         </header>
 
         <section style={styles.card}>
-          <form onSubmit={handleSubmit} style={styles.form}>
-            <Field label="Roast">
-              <select
-                value={roast}
-                onChange={(e) => setRoast(e.target.value)}
-                style={styles.select}
-              >
+          <form onSubmit={onSubmit} style={styles.form}>
+            <label style={styles.label}>
+              Roast
+              <select value={roast} onChange={(e) => setRoast(e.target.value)} style={styles.select}>
                 {ROASTS.map((r) => (
-                  <option key={r.id} value={r.id} style={styles.option}>
+                  <option key={r.id} value={r.id}>
                     {r.name} — {r.note}
                   </option>
                 ))}
               </select>
-            </Field>
+            </label>
 
-            <Field label="Bag Size">
-              <select
-                value={size}
-                onChange={(e) => setSize(e.target.value)}
-                style={styles.select}
-              >
+            <label style={styles.label}>
+              Size
+              <select value={size} onChange={(e) => setSize(e.target.value)} style={styles.select}>
                 {SIZES.map((s) => (
-                  <option key={s.id} value={s.id} style={styles.option}>
-                    {s.label}
+                  <option key={s.id} value={s.id}>
+                    {s.label} — ${s.price}
                   </option>
                 ))}
               </select>
-            </Field>
+            </label>
 
-            <Field label="Delivery">
+            <label style={styles.label}>
+              Frequency
               <select
                 value={frequency}
                 onChange={(e) => setFrequency(e.target.value)}
                 style={styles.select}
               >
                 {FREQUENCIES.map((f) => (
-                  <option key={f.id} value={f.id} style={styles.option}>
-                    {f.label}
+                  <option key={f.id} value={f.id}>
+                    {f.label} — {Math.round(f.discount * 100)}% off
                   </option>
                 ))}
               </select>
+            </label>
 
-              <div style={styles.helper}>
-                Weekly saves 15% • Every 2 weeks saves 10% • Monthly saves 5%
-              </div>
-            </Field>
-
-            <Field label="Email">
+            <label style={styles.label}>
+              Email
               <input
-                type="email"
-                required
-                placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
                 style={styles.input}
+                inputMode="email"
+                autoComplete="email"
               />
-            </Field>
+            </label>
 
             <div style={styles.summary}>
-              <div style={styles.summaryTop}>
-                <span style={styles.summaryPill}>
-                  {selectedRoast?.name} · {selectedSize?.label}
-                </span>
-                <span style={styles.summaryMuted}>
-                  {selectedFrequency?.label} delivery
-                </span>
+              <div style={styles.summaryRow}>
+                <span>Estimated price</span>
+                <b>${price.toFixed(2)}</b>
               </div>
-
-              <div style={styles.priceRow}>
-                <div style={styles.price}>
-                  ${price} <span style={styles.per}>/ shipment</span>
-                </div>
-                <div style={styles.miniNote}>Manage or cancel anytime</div>
+              <div style={styles.summaryNote}>
+                Demo only — no payment is processed. Email is simulated server-side.
               </div>
             </div>
 
-            <button type="submit" style={styles.button}>
-              Start Subscription
+            {errorMsg ? <div style={styles.error}>{errorMsg}</div> : null}
+
+            <button type="submit" style={styles.button} disabled={loading}>
+              {loading ? "Submitting…" : "Confirm Subscription"}
             </button>
-
-            <div style={styles.footerNote}>
-              Subscription details will appear on the next page.
-            </div>
           </form>
         </section>
+
+        <footer style={styles.footer}>
+          You can show employers the architecture: client form → API route → simulated emails → confirmation.
+        </footer>
       </div>
     </main>
-  );
-}
-
-function Field({ label, children }) {
-  return (
-    <div style={styles.field}>
-      <label style={styles.label}>{label}</label>
-      {children}
-    </div>
   );
 }
 
 const styles = {
   page: {
     minHeight: "100vh",
-    background: "#f2ece6",
-    padding: "48px 18px",
-    fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, sans-serif",
-    color: "#1a1a1a",
+    display: "flex",
+    justifyContent: "center",
+    padding: 24,
+    background: "#0b0b0c",
+    color: "#f2f2f2",
+    fontFamily:
+      'ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial',
   },
-  shell: {
-    maxWidth: 760,
-    margin: "0 auto",
-  },
-  header: {
-    marginBottom: 18,
-  },
+  shell: { width: "100%", maxWidth: 720 },
+  header: { marginBottom: 18 },
   badge: {
-    backgroundColor: "#5f021f",
-    color: "#ffffff",
-    padding: "6px 12px",
-    borderRadius: 999,
-    letterSpacing: "0.12em",
-    fontWeight: 600,
-    fontSize: 12,
-    marginBottom: 14,
     display: "inline-block",
-    textTransform: "uppercase",
+    padding: "6px 10px",
+    border: "1px solid rgba(255,255,255,.18)",
+    borderRadius: 999,
+    fontSize: 12,
+    letterSpacing: 0.4,
+    opacity: 0.9,
   },
-  title: {
-    fontSize: 38,
-    margin: 0,
-    lineHeight: 1.1,
-  },
-  subtitle: {
-    marginTop: 10,
-    marginBottom: 0,
-    color: "rgba(0,0,0,0.65)",
-    fontSize: 16,
-  },
+  title: { margin: "10px 0 6px", fontSize: 32, lineHeight: 1.1 },
+  subtitle: { margin: 0, opacity: 0.8 },
   card: {
-    background: "#ffffff",
-    borderRadius: 18,
-    boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
-    border: "1px solid rgba(0,0,0,0.08)",
-    padding: 22,
+    border: "1px solid rgba(255,255,255,.14)",
+    borderRadius: 16,
+    padding: 16,
+    background: "rgba(255,255,255,.03)",
   },
-  form: {
-    display: "grid",
-    gap: 16,
-  },
-  field: {
-    display: "grid",
-    gap: 8,
-  },
-  label: {
-    fontWeight: 700,
-    fontSize: 13,
-    letterSpacing: 0.3,
-  },
-
-  // ✅ SELECT (dropdown) — iOS Safari + WordPress app visibility fix
+  form: { display: "grid", gap: 12 },
+  label: { display: "grid", gap: 6, fontSize: 14, opacity: 0.95 },
   select: {
-    width: "100%",
-    padding: "12px 12px",
-    fontSize: 16,
+    padding: 12,
     borderRadius: 12,
-    border: "1px solid rgba(0,0,0,0.18)",
-    backgroundColor: "#fff",
-    color: "#1a1a1a",
-    WebkitTextFillColor: "#1a1a1a",
-    opacity: 1,
-    appearance: "auto",
-    WebkitAppearance: "menulist-button",
-  },
-
-  option: {
-    color: "#1a1a1a",
-  },
-
-  // ✅ INPUT (email) — iOS Safari + WordPress app visibility fix
-  input: {
-    width: "100%",
-    padding: "12px 12px",
-    fontSize: 16,
-    borderRadius: 12,
-    border: "1px solid rgba(0,0,0,0.18)",
-    backgroundColor: "#fff",
-    color: "#1a1a1a",
-    WebkitTextFillColor: "#1a1a1a",
-    caretColor: "#1a1a1a",
-    opacity: 1,
+    border: "1px solid rgba(255,255,255,.16)",
+    background: "#111114",
+    color: "#f2f2f2",
     outline: "none",
   },
-
-  helper: {
-    fontSize: 12,
-    color: "rgba(0,0,0,0.6)",
-    marginTop: 4,
+  input: {
+    padding: 12,
+    borderRadius: 12,
+    border: "1px solid rgba(255,255,255,.16)",
+    background: "#111114",
+    color: "#f2f2f2",
+    outline: "none",
   },
   summary: {
-    marginTop: 4,
-    padding: 14,
-    borderRadius: 14,
-    background: "rgba(0,0,0,0.04)",
-    border: "1px solid rgba(0,0,0,0.06)",
+    marginTop: 6,
+    border: "1px dashed rgba(255,255,255,.18)",
+    borderRadius: 12,
+    padding: 12,
   },
-  summaryTop: {
-    display: "flex",
-    justifyContent: "space-between",
-    gap: 10,
-    flexWrap: "wrap",
-    alignItems: "center",
-  },
-  summaryPill: {
+  summaryRow: { display: "flex", justifyContent: "space-between" },
+  summaryNote: { marginTop: 6, fontSize: 12, opacity: 0.75 },
+  error: {
+    border: "1px solid rgba(255,80,80,.35)",
+    background: "rgba(255,80,80,.10)",
+    padding: 10,
+    borderRadius: 12,
     fontSize: 13,
-    fontWeight: 700,
-  },
-  summaryMuted: {
-    color: "rgba(0,0,0,0.65)",
-    fontSize: 13,
-  },
-  priceRow: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "baseline",
-    marginTop: 10,
-    gap: 10,
-    flexWrap: "wrap",
-  },
-  price: {
-    fontSize: 28,
-    fontWeight: 800,
-  },
-  per: {
-    fontSize: 14,
-    fontWeight: 600,
-    color: "rgba(0,0,0,0.6)",
-  },
-  miniNote: {
-    fontSize: 12,
-    color: "rgba(0,0,0,0.6)",
   },
   button: {
-    marginTop: 6,
-    backgroundColor: "#5f021f",
-    color: "#ffffff",
-    padding: "14px",
-    width: "100%",
-    borderRadius: 14,
-    fontSize: 16,
+    padding: "12px 14px",
+    borderRadius: 12,
+    border: "1px solid rgba(255,255,255,.16)",
+    background: "#f2ece6",
+    color: "#0b0b0c",
     fontWeight: 800,
-    border: "none",
     cursor: "pointer",
   },
-  footerNote: {
-    fontSize: 12,
-    color: "rgba(0,0,0,0.55)",
-    marginTop: 6,
-    lineHeight: 1.35,
-  },
+  footer: { marginTop: 14, fontSize: 12, opacity: 0.75 },
 };
