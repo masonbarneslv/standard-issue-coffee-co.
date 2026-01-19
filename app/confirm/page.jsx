@@ -35,19 +35,22 @@ function ConfirmInner() {
 
   return (
     <main style={styles.page}>
-      <div style={styles.shell}>
-        <header style={styles.header}>
-          <div style={styles.badge}>Standard Issue Coffee Co</div>
-          <h1 style={styles.title}>Subscription Confirmed</h1>
-          <p style={styles.subtitle}>Portfolio demo — email is simulated.</p>
+      {/* HEADER BAND */}
+      <div style={styles.headerBand}>
+        <div style={styles.shell}>
+          <div style={styles.badge}>STANDARD ISSUE COFFEE CO</div>
+          <h1 style={styles.heroTitle}>Subscription Details</h1>
+          <p style={styles.heroSubtitle}>Portfolio demo — email is simulated.</p>
+        </div>
+      </div>
 
-          {emailStatus === "sent_demo" && (
-            <div style={styles.banner}>
-              ✅ Confirmation email sent <b>(demo)</b> to <b>{email}</b> and company
-              inbox.
-            </div>
-          )}
-        </header>
+      <div style={styles.shell}>
+        {emailStatus === "sent_demo" && (
+          <div style={styles.banner}>
+            ✅ Confirmation email sent <b>(demo)</b> to <b>{email}</b> and company
+            inbox.
+          </div>
+        )}
 
         <section style={styles.card}>
           <Row label="Roast" value={roast} />
@@ -62,7 +65,6 @@ function ConfirmInner() {
 
         <section style={styles.card}>
           <h2 style={styles.h2}>Email Pipeline (Demo)</h2>
-
           <PipelineRow label="Queued" active={step >= 1} />
           <PipelineRow label="Processed" active={step >= 2} />
           <PipelineRow label="Dispatched" active={step >= 3} />
@@ -84,6 +86,8 @@ function ConfirmInner() {
             Back to Website
           </button>
         </div>
+
+        <div style={{ height: 28 }} />
       </div>
     </main>
   );
@@ -92,15 +96,20 @@ function ConfirmInner() {
 function LoadingUI() {
   return (
     <main style={styles.page}>
-      <div style={styles.shell}>
-        <div style={styles.card}>
-          <div style={{ fontWeight: 900, color: "#8b0000" }}>
-            Loading confirmation…
-          </div>
-          <div style={{ marginTop: 8, opacity: 0.8, fontSize: 13 }}>
-            Preparing subscription details.
-          </div>
+      <div style={styles.headerBand}>
+        <div style={styles.shell}>
+          <div style={styles.badge}>STANDARD ISSUE COFFEE CO</div>
+          <h1 style={styles.heroTitle}>Subscription Details</h1>
+          <p style={styles.heroSubtitle}>Loading…</p>
         </div>
+      </div>
+      <div style={styles.shell}>
+        <section style={styles.card}>
+          <div style={{ fontWeight: 900, color: "#111" }}>Preparing details…</div>
+          <div style={{ marginTop: 8, opacity: 0.8, fontSize: 13 }}>
+            One moment.
+          </div>
+        </section>
       </div>
     </main>
   );
@@ -130,37 +139,53 @@ function PipelineRow({ label, active }) {
 const styles = {
   page: {
     minHeight: "100vh",
-    display: "flex",
-    justifyContent: "center",
-    padding: 24,
-    background: "#f2ece6", // tan background
+    background: "#f2ece6",
     color: "#1a1a1a",
     fontFamily:
       "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial",
   },
-  shell: { width: "100%", maxWidth: 720 },
-  header: { marginBottom: 16 },
+
+  shell: { width: "100%", maxWidth: 720, margin: "0 auto", padding: "0 24px" },
+
+  headerBand: {
+    padding: "42px 0 22px",
+    background:
+      "linear-gradient(180deg, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.00) 40%), #f2ece6",
+  },
+
   badge: {
     display: "inline-block",
-    padding: "6px 10px",
+    padding: "12px 18px",
     borderRadius: 999,
-    background: "rgba(139,0,0,.10)",
-    border: "1px solid rgba(139,0,0,.25)",
-    color: "#8b0000",
-    fontWeight: 700,
-    fontSize: 12,
+    background: "linear-gradient(180deg, #4b0014 0%, #2a000a 100%)",
+    color: "#ffffff",
+    fontWeight: 800,
+    letterSpacing: 3,
+    fontSize: 13,
+    textTransform: "uppercase",
+    boxShadow: "0 10px 20px rgba(0,0,0,.12)",
   },
-  title: {
-    margin: "10px 0 6px",
-    fontSize: 34,
-    color: "#8b0000",
+
+  heroTitle: {
+    margin: "18px 0 6px",
+    fontSize: 54,
+    lineHeight: 1.03,
+    fontWeight: 900,
+    letterSpacing: -1.2,
+    color: "#111111",
   },
-  subtitle: { margin: 0, opacity: 0.85 },
+
+  heroSubtitle: {
+    margin: 0,
+    fontSize: 18,
+    opacity: 0.85,
+    maxWidth: 560,
+  },
 
   banner: {
-    marginTop: 12,
+    marginTop: 18,
     padding: 12,
-    borderRadius: 12,
+    borderRadius: 14,
     background: "rgba(139,0,0,.06)",
     border: "1px solid rgba(139,0,0,.22)",
     color: "#1a1a1a",
@@ -169,17 +194,18 @@ const styles = {
   card: {
     marginTop: 14,
     border: "1px solid rgba(139,0,0,.18)",
-    borderRadius: 16,
-    padding: 16,
-    background: "#fff8f2", // lighter tan card
+    borderRadius: 18,
+    padding: 18,
+    background: "#fff8f2",
     boxShadow: "0 10px 30px rgba(0,0,0,.08)",
   },
 
-  h2: { marginBottom: 10, fontSize: 16, color: "#8b0000" },
+  h2: { marginBottom: 10, fontSize: 16, color: "#111" },
 
   row: {
     display: "flex",
     justifyContent: "space-between",
+    gap: 12,
     padding: "6px 0",
   },
 
@@ -212,18 +238,18 @@ const styles = {
   },
 
   btn: {
-    padding: "12px 14px",
-    borderRadius: 12,
-    background: "#8b0000", // red button
-    color: "#f2ece6", // tan text
+    padding: "14px 16px",
+    borderRadius: 14,
+    background: "#8b0000",
+    color: "#f2ece6",
     fontWeight: 900,
     border: "none",
     cursor: "pointer",
   },
 
   btnGhost: {
-    padding: "12px 14px",
-    borderRadius: 12,
+    padding: "14px 16px",
+    borderRadius: 14,
     background: "transparent",
     color: "#8b0000",
     fontWeight: 900,
