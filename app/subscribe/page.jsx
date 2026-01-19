@@ -235,14 +235,20 @@ const styles = {
     letterSpacing: 0.3,
   },
   control: {
-    width: "100%",
-    padding: "12px 12px",
-    fontSize: 16,
-    borderRadius: 12,
-    border: "1px solid rgba(0,0,0,0.18)",
-    outline: "none",
-    background: "#fff",
-  },
+  width: "100%",
+  padding: "12px 12px",
+  fontSize: 16,
+  borderRadius: 12,
+  border: "1px solid rgba(0,0,0,0.18)",
+  outline: "none",
+  background: "#fff",
+
+  // ✅ Fix for Safari + WordPress in-app browser
+  color: "#1a1a1a",
+  WebkitTextFillColor: "#1a1a1a",
+  appearance: "menulist",
+  WebkitAppearance: "menulist",
+},
   helper: {
     fontSize: 12,
     color: "rgba(0,0,0,0.6)",
