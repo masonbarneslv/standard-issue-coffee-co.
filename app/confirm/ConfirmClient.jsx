@@ -11,22 +11,14 @@ export default function ConfirmClient() {
   const frequency = params.get("frequency") || "";
   const price = params.get("price") || "";
   const email = params.get("email") || "";
-  const emailStatus = params.get("emailStatus") || "";
 
   return (
     <main style={styles.page}>
       <div style={styles.shell}>
         <header style={styles.header}>
           <div style={styles.badge}>Standard Issue Coffee Co</div>
-          <h1 style={styles.title}>Subscription Confirmed</h1>
-          <p style={styles.subtitle}>Your subscription details are below.</p>
-
-          {emailStatus === "sent_demo" && (
-            <div style={styles.banner}>
-              ✅ Confirmation email sent (demo) to <b>{email}</b> and{" "}
-              <b>info@standardissuecoffeeco.com</b>
-            </div>
-          )}
+          <h1 style={styles.title}>Subscription Details</h1>
+          <p style={styles.subtitle}>Thanks — here’s what you selected.</p>
         </header>
 
         <section style={styles.card}>
@@ -43,7 +35,7 @@ export default function ConfirmClient() {
                 <div style={styles.price}>
                   ${price} <span style={styles.per}>/ shipment</span>
                 </div>
-                <div style={styles.miniNote}>Demo confirmation</div>
+                <div style={styles.miniNote}>Manage or cancel anytime</div>
               </div>
             </div>
 
@@ -63,8 +55,7 @@ export default function ConfirmClient() {
             </button>
 
             <div style={styles.footerNote}>
-              Demo only — no payment collected yet. Next step: connect Stripe
-              Checkout and store subscriptions in a database.
+              You can update, pause, or cancel your subscription at any time.
             </div>
           </div>
         </section>
@@ -110,15 +101,6 @@ const styles = {
     marginBottom: 0,
     color: "rgba(0,0,0,0.65)",
     fontSize: 16,
-  },
-  banner: {
-    marginTop: 12,
-    padding: "12px 14px",
-    borderRadius: 14,
-    background: "rgba(95, 2, 31, 0.08)",
-    border: "1px solid rgba(95, 2, 31, 0.18)",
-    fontSize: 13,
-    lineHeight: 1.35,
   },
   card: {
     background: "#ffffff",
