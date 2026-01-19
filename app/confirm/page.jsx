@@ -114,7 +114,7 @@ function ConfirmInner() {
                 "https://standardissuecoffecco.wpcomstaging.com")
             }
           >
-            Back to Website
+            Back to Home
           </button>
         </div>
       </div>
@@ -218,7 +218,7 @@ const styles = {
     flex: 1,
     padding: "14px",
     borderRadius: 999,
-    background: "transparent",
+    background: "#ffffff",
     color: "#8b0000",
     fontWeight: 800,
     border: "2px solid #8b0000",
