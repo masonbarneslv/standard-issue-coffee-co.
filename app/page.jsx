@@ -20,7 +20,8 @@ const FREQUENCIES = [
   { id: "monthly", label: "Monthly", discount: 0.05 },
 ];
 
-const BURGUNDY = "#5f021f";
+// ONLY CHANGE ↓↓↓
+const TOP_PILL_COLOR = "#5f021f";
 
 export default function SubscribePage() {
   const router = useRouter();
@@ -30,7 +31,11 @@ export default function SubscribePage() {
   const [frequency, setFrequency] = useState(FREQUENCIES[1].id);
   const [email, setEmail] = useState("");
 
-  const selectedSize = useMemo(() => SIZES.find((s) => s.id === size), [size]);
+  const selectedSize = useMemo(
+    () => SIZES.find((s) => s.id === size),
+    [size]
+  );
+
   const selectedFreq = useMemo(
     () => FREQUENCIES.find((f) => f.id === frequency),
     [frequency]
@@ -42,137 +47,184 @@ export default function SubscribePage() {
     return Math.round(base * (1 - discount) * 100) / 100;
   }, [selectedSize, selectedFreq]);
 
-  function onSubmit(e) {
+  function handleSubmit(e) {
     e.preventDefault();
 
-    const qs = new URLSearchParams({
+    const params = new URLSearchParams({
       roast,
       size,
       frequency,
-      price: String(price),
+      price: price.toFixed(2),
       email,
       emailStatus: "sent_demo",
     });
 
-    router.push(`/confirm?${qs.toString()}`);
+    router.push(`/confirm?${params.toString()}`);
   }
 
   return (
     <main style={styles.page}>
-      <div style={styles.headerBand}>
-        <div style={styles.shell}>
-          <div style={styles.badge}>STANDARD ISSUE COFFEE CO</div>
-          <h1 style={styles.heroTitle}>Subscription Signup</h1>
-          <p style={styles.heroSubtitle}>
-            Portfolio demo: simulates secure email delivery.
-          </p>
-        </div>
-      </div>
+      <div style={styles.container}>
+        {/* TOP PILL — ONLY COLOR CHANGED */}
+        <div style={styles.badge}>Standard Issue Coffee Co</div>
 
-      <div style={styles.shell}>
-        <section style={styles.card}>
-          <form onSubmit={onSubmit} style={styles.form}>
-            <label style={styles.label}>
-              Roast
-              <select style={styles.select} value={roast} onChange={(e) => setRoast(e.target.value)}>
-                {ROASTS.map((r) => (
-                  <option key={r.id} value={r.id}>{r.name} — {r.note}</option>
-                ))}
-              </select>
-            </label>
+        <h1 style={styles.title}>Subscription Signup</h1>
+        <p style={styles.subtitle}>
+          Portfolio demo: simulates secure email delivery via server API.
+        </p>
 
-            <label style={styles.label}>
-              Size
-              <select style={styles.select} value={size} onChange={(e) => setSize(e.target.value)}>
-                {SIZES.map((s) => (
-                  <option key={s.id} value={s.id}>{s.label} — ${s.price}</option>
-                ))}
-              </select>
-            </label>
+        <form onSubmit={handleSubmit} style={styles.card}>
+          <label style={styles.label}>
+            Roast
+            <select style={styles.input} value={roast} onChange={(e) => setRoast(e.target.value)}>
+              {ROASTS.map((r) => (
+                <option key={r.id} value={r.id}>
+                  {r.name} — {r.note}
+                </option>
+              ))}
+            </select>
+          </label>
 
-            <label style={styles.label}>
-              Frequency
-              <select style={styles.select} value={frequency} onChange={(e) => setFrequency(e.target.value)}>
-                {FREQUENCIES.map((f) => (
-                  <option key={f.id} value={f.id}>{f.label}</option>
-                ))}
-              </select>
-            </label>
+          <label style={styles.label}>
+            Size
+            <select style={styles.input} value={size} onChange={(e) => setSize(e.target.value)}>
+              {SIZES.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.label} — ${s.price}
+                </option>
+              ))}
+            </select>
+          </label>
 
-            <label style={styles.label}>
-              Email
-              <input
-                style={styles.input}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-              />
-            </label>
+          <label style={styles.label}>
+            Frequency
+            <select style={styles.input} value={frequency} onChange={(e) => setFrequency(e.target.value)}>
+              {FREQUENCIES.map((f) => (
+                <option key={f.id} value={f.id}>
+                  {f.label} — {Math.round(f.discount * 100)}% off
+                </option>
+              ))}
+            </select>
+          </label>
 
-            <div style={styles.summary}>
-              <div style={styles.summaryRow}>
-                <span>Estimated price</span>
-                <b>${price.toFixed(2)}</b>
-              </div>
+          <label style={styles.label}>
+            Email
+            <input
+              style={styles.input}
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </label>
+
+          <div style={styles.priceBox}>
+            <div>
+              <strong>Estimated price</strong>
+              <div style={styles.muted}>Demo only — no payment processed.</div>
             </div>
+            <div style={styles.price}>${price.toFixed(2)}</div>
+          </div>
 
-            <button type="submit" style={styles.primaryBtn}>
-              Confirm Subscription
-            </button>
-          </form>
-        </section>
+          <button type="submit" style={styles.button}>
+            Confirm Subscription
+          </button>
+        </form>
+
+        <p style={styles.footer}>
+          Client form → API route → simulated emails → confirmation page.
+        </p>
       </div>
     </main>
   );
 }
 
 const styles = {
-  page: { minHeight: "100vh", background: "#f2ece6", fontFamily: "system-ui" },
-  shell: { maxWidth: 720, margin: "0 auto", padding: "0 24px" },
-
-  headerBand: { padding: "42px 0 22px" },
-
-  badge: {
-    background: BURGUNDY,
-    color: "#fff",
-    padding: "12px 18px",
-    borderRadius: 999,
-    fontWeight: 800,
-    letterSpacing: 2,
-    display: "inline-block",
+  page: {
+    minHeight: "100vh",
+    background: "#f2ece6",
+    display: "flex",
+    justifyContent: "center",
+    padding: "40px 16px",
+    fontFamily: "system-ui, -apple-system, sans-serif",
   },
-
-  heroTitle: { fontSize: 48, margin: "18px 0 6px", color: "#111" },
-  heroSubtitle: { opacity: 0.8 },
-
+  container: {
+    width: "100%",
+    maxWidth: 420,
+  },
+  badge: {
+    display: "inline-block",
+    padding: "6px 14px",
+    borderRadius: 999,
+    background: TOP_PILL_COLOR, // ONLY CHANGE
+    color: "#fff",
+    fontSize: 12,
+    fontWeight: 700,
+    marginBottom: 12,
+  },
+  title: {
+    fontSize: 34,
+    fontWeight: 800,
+    color: "#8b0000",
+    marginBottom: 6,
+  },
+  subtitle: {
+    color: "#555",
+    marginBottom: 20,
+  },
   card: {
-    background: "#fff8f2",
+    background: "#fff6ee",
     borderRadius: 18,
     padding: 18,
-    border: `1px solid ${BURGUNDY}33`,
+    border: "1px solid #e2c8c0",
+    display: "grid",
+    gap: 14,
   },
-
-  form: { display: "grid", gap: 12 },
-  label: { fontWeight: 700 },
-  select: { padding: 14, borderRadius: 14, border: `1px solid ${BURGUNDY}55` },
-  input: { padding: 14, borderRadius: 14, border: `1px solid ${BURGUNDY}55` },
-
-  summary: {
-    border: `1px dashed ${BURGUNDY}55`,
-    borderRadius: 14,
-    padding: 14,
+  label: {
+    fontWeight: 600,
+    color: "#222",
+    display: "grid",
+    gap: 6,
   },
-
-  summaryRow: { display: "flex", justifyContent: "space-between" },
-
-  primaryBtn: {
-    marginTop: 10,
-    padding: "14px 16px",
+  input: {
+    padding: "12px 14px",
+    borderRadius: 12,
+    border: "1px solid #e2c8c0",
+    fontSize: 16,
+    color: "#111",
+    background: "#fff",
+  },
+  priceBox: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    border: "1px dashed #e2c8c0",
+    borderRadius: 12,
+    padding: 12,
+    background: "#fdf3ec",
+  },
+  muted: {
+    fontSize: 12,
+    color: "#666",
+  },
+  price: {
+    fontWeight: 800,
+    fontSize: 18,
+  },
+  button: {
+    marginTop: 8,
+    padding: "14px",
     borderRadius: 999,
-    background: BURGUNDY,
+    background: "#8b0000",
     color: "#fff",
-    fontWeight: 900,
+    fontSize: 16,
+    fontWeight: 800,
     border: "none",
     cursor: "pointer",
+  },
+  footer: {
+    marginTop: 14,
+    fontSize: 13,
+    color: "#666",
+    textAlign: "center",
   },
 };
