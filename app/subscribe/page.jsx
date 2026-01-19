@@ -56,6 +56,7 @@ export default function SubscribePage() {
       frequency: subscription.frequency,
       price: subscription.price,
       email: subscription.email,
+      emailStatus: "sent_demo",
     }).toString();
 
     router.push(`/confirm?${qs}`);
@@ -81,7 +82,7 @@ export default function SubscribePage() {
                 style={styles.control}
               >
                 {ROASTS.map((r) => (
-                  <option key={r.id} value={r.id}>
+                  <option key={r.id} value={r.id} style={styles.option}>
                     {r.name} — {r.note}
                   </option>
                 ))}
@@ -95,7 +96,7 @@ export default function SubscribePage() {
                 style={styles.control}
               >
                 {SIZES.map((s) => (
-                  <option key={s.id} value={s.id}>
+                  <option key={s.id} value={s.id} style={styles.option}>
                     {s.label}
                   </option>
                 ))}
@@ -109,7 +110,7 @@ export default function SubscribePage() {
                 style={styles.control}
               >
                 {FREQUENCIES.map((f) => (
-                  <option key={f.id} value={f.id}>
+                  <option key={f.id} value={f.id} style={styles.option}>
                     {f.label}
                   </option>
                 ))}
@@ -129,9 +130,7 @@ export default function SubscribePage() {
                 onChange={(e) => setEmail(e.target.value)}
                 style={styles.control}
               />
-              <div style={styles.helper}>
-                Demo only — no payment collected yet.
-              </div>
+              <div style={styles.helper}>Demo only — no payment collected yet.</div>
             </Field>
 
             <div style={styles.summary}>
@@ -192,8 +191,8 @@ const styles = {
     marginBottom: 18,
   },
   badge: {
-    backgroundColor: "#5f021f", // deep red
-    color: "#ffffff", // white text
+    backgroundColor: "#5f021f",
+    color: "#ffffff",
     padding: "6px 12px",
     borderRadius: 999,
     letterSpacing: "0.12em",
@@ -234,21 +233,28 @@ const styles = {
     fontSize: 13,
     letterSpacing: 0.3,
   },
-  control: {
-  width: "100%",
-  padding: "12px 12px",
-  fontSize: 16,
-  borderRadius: 12,
-  border: "1px solid rgba(0,0,0,0.18)",
-  outline: "none",
-  background: "#fff",
 
-  // ✅ Fix for Safari + WordPress in-app browser
-  color: "#1a1a1a",
-  WebkitTextFillColor: "#1a1a1a",
-  appearance: "menulist",
-  WebkitAppearance: "menulist",
-},
+  // ✅ UPDATED: iOS Safari + WordPress in-app browser dropdown text fix
+  control: {
+    width: "100%",
+    padding: "12px 12px",
+    fontSize: 16,
+    borderRadius: 12,
+    border: "1px solid rgba(0,0,0,0.18)",
+    outline: "none",
+    backgroundColor: "#fff",
+    color: "#1a1a1a",
+    WebkitTextFillColor: "#1a1a1a",
+    opacity: 1,
+    appearance: "auto",
+    WebkitAppearance: "menulist-button",
+  },
+
+  // ✅ NEW: force option text color too
+  option: {
+    color: "#1a1a1a",
+  },
+
   helper: {
     fontSize: 12,
     color: "rgba(0,0,0,0.6)",
@@ -299,7 +305,7 @@ const styles = {
   },
   button: {
     marginTop: 6,
-    backgroundColor: "#5f021f", // SAME red as Standard Issue badge
+    backgroundColor: "#5f021f",
     color: "#ffffff",
     padding: "14px",
     width: "100%",
