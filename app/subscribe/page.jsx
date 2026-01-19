@@ -10,7 +10,7 @@ const ROASTS = [
 ];
 
 const SIZES = [
-  { id: "16oz", label: "16 oz", price: 18 },
+  { id: "1 lb", label: "1 lb", price: 18 },
   { id: "2lb", label: "2 lb", price: 32 },
 ];
 
@@ -164,7 +164,7 @@ const styles = {
   title: {
     fontSize: 34,
     fontWeight: 800,
-    color: "#8b0000",
+    color: "#111",
     marginBottom: 6,
   },
   subtitle: {
