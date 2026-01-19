@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 
 const ROASTS = [
   { id: "first-light", name: "First Light", note: "Light Roast" },
@@ -20,6 +21,8 @@ const FREQUENCIES = [
 ];
 
 export default function SubscribePage() {
+  const router = useRouter();
+
   const [roast, setRoast] = useState(ROASTS[0].id);
   const [size, setSize] = useState(SIZES[0].id);
   const [frequency, setFrequency] = useState("monthly");
@@ -46,8 +49,16 @@ export default function SubscribePage() {
     };
 
     console.log("Subscription (demo):", subscription);
-    alert("Subscription created! (Demo only)");
-    setEmail("");
+
+    const qs = new URLSearchParams({
+      roast: subscription.roast,
+      size: subscription.size,
+      frequency: subscription.frequency,
+      price: subscription.price,
+      email: subscription.email,
+    }).toString();
+
+    router.push(`/confirm?${qs}`);
   }
 
   return (
@@ -181,17 +192,17 @@ const styles = {
     marginBottom: 18,
   },
   badge: {
-  backgroundColor: "#5f021f", // deep red
-  color: "#ffffff",          // white text
-  padding: "6px 12px",
-  borderRadius: 999,
-  letterSpacing: "0.12em",
-  fontWeight: 600,
-  fontSize: 12,
-  marginBottom: 14,
-  display: "inline-block",
-  textTransform: "uppercase",
-},
+    backgroundColor: "#5f021f", // deep red
+    color: "#ffffff", // white text
+    padding: "6px 12px",
+    borderRadius: 999,
+    letterSpacing: "0.12em",
+    fontWeight: 600,
+    fontSize: 12,
+    marginBottom: 14,
+    display: "inline-block",
+    textTransform: "uppercase",
+  },
   title: {
     fontSize: 38,
     margin: 0,
@@ -251,17 +262,10 @@ const styles = {
     flexWrap: "wrap",
     alignItems: "center",
   },
-  button: {
-  backgroundColor: "#b11226", // same red as Standard Issue
-  color: "#ffffff",
-  padding: "14px",
-  width: "100%",
-  borderRadius: 8,
-  fontSize: 16,
-  fontWeight: 600,
-  border: "none",
-  cursor: "pointer",
-},
+  summaryPill: {
+    fontSize: 13,
+    fontWeight: 700,
+  },
   summaryMuted: {
     color: "rgba(0,0,0,0.65)",
     fontSize: 13,
@@ -288,17 +292,17 @@ const styles = {
     color: "rgba(0,0,0,0.6)",
   },
   button: {
-  marginTop: 6,
-  backgroundColor: "#5f021f", // SAME red as Standard Issue badge
-  color: "#ffffff",
-  padding: "14px",
-  width: "100%",
-  borderRadius: 14,
-  fontSize: 16,
-  fontWeight: 800,
-  border: "none",
-  cursor: "pointer",
-},
+    marginTop: 6,
+    backgroundColor: "#5f021f", // SAME red as Standard Issue badge
+    color: "#ffffff",
+    padding: "14px",
+    width: "100%",
+    borderRadius: 14,
+    fontSize: 16,
+    fontWeight: 800,
+    border: "none",
+    cursor: "pointer",
+  },
   footerNote: {
     fontSize: 12,
     color: "rgba(0,0,0,0.55)",
