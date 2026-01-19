@@ -1,12 +1,11 @@
 "use client";
 
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 export default function ConfirmClient() {
   const params = useSearchParams();
-  const router = useRouter();
 
-  const roast = params.get("roast") || "";
+  const roast = params.get("roast") || "Subscription";
   const size = params.get("size") || "";
   const frequency = params.get("frequency") || "";
   const price = params.get("price") || "";
@@ -17,8 +16,10 @@ export default function ConfirmClient() {
       <div style={styles.shell}>
         <header style={styles.header}>
           <div style={styles.badge}>Standard Issue Coffee Co</div>
-          <h1 style={styles.title}>Subscription Details</h1>
-          <p style={styles.subtitle}>Thanks — here’s what you selected.</p>
+          <h1 style={styles.title}>Subscription Confirmed</h1>
+          <p style={styles.subtitle}>
+            Thanks for signing up — your subscription is locked in.
+          </p>
         </header>
 
         <section style={styles.card}>
@@ -26,36 +27,51 @@ export default function ConfirmClient() {
             <div style={styles.summary}>
               <div style={styles.summaryTop}>
                 <span style={styles.summaryPill}>
-                  {roast} · {size}
+                  {roast}
+                  {size && ` · ${size}`}
                 </span>
-                <span style={styles.summaryMuted}>{frequency} delivery</span>
+                {frequency && (
+                  <span style={styles.summaryMuted}>
+                    {frequency} delivery
+                  </span>
+                )}
               </div>
 
-              <div style={styles.priceRow}>
-                <div style={styles.price}>
-                  ${price} <span style={styles.per}>/ shipment</span>
+              {price && (
+                <div style={styles.priceRow}>
+                  <div style={styles.price}>
+                    ${price} <span style={styles.per}>/ shipment</span>
+                  </div>
+                  <div style={styles.miniNote}>
+                    Manage or cancel anytime
+                  </div>
                 </div>
-                <div style={styles.miniNote}>Manage or cancel anytime</div>
-              </div>
+              )}
             </div>
 
-            <div style={styles.summary}>
-              <div style={styles.field}>
-                <div style={styles.label}>Email</div>
-                <div style={styles.controlLike}>{email}</div>
+            {email && (
+              <div style={styles.summary}>
+                <div style={styles.field}>
+                  <div style={styles.label}>Email</div>
+                  <div style={styles.controlLike}>{email}</div>
+                </div>
               </div>
-            </div>
+            )}
 
             <button
               type="button"
               style={styles.button}
-              onClick={() => router.push("/subscribe")}
+              onClick={() => {
+                window.location.href =
+                  "https://standardissuecoffecco.wpcomstaging.com";
+              }}
             >
-              Back to Subscription
+              Back to Home
             </button>
 
             <div style={styles.footerNote}>
-              You can update, pause, or cancel your subscription at any time.
+              You’ll receive a confirmation email shortly.  
+              Thank you for supporting small-batch coffee.
             </div>
           </div>
         </section>
@@ -69,7 +85,8 @@ const styles = {
     minHeight: "100vh",
     background: "#f2ece6",
     padding: "48px 18px",
-    fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, sans-serif",
+    fontFamily:
+      "system-ui, -apple-system, Segoe UI, Roboto, sans-serif",
     color: "#1a1a1a",
   },
   shell: {
@@ -124,7 +141,7 @@ const styles = {
   },
   controlLike: {
     width: "100%",
-    padding: "12px 12px",
+    padding: "12px",
     fontSize: 16,
     borderRadius: 12,
     border: "1px solid rgba(0,0,0,0.18)",
@@ -189,5 +206,6 @@ const styles = {
     color: "rgba(0,0,0,0.55)",
     marginTop: 6,
     lineHeight: 1.35,
+    textAlign: "center",
   },
 };
