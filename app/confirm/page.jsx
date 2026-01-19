@@ -1,25 +1,76 @@
+"use client";
+
+// ✅ THIS LINE FIXES THE VERCEL BUILD ERROR
+export const dynamic = "force-dynamic";
+
+import { useSearchParams, useRouter } from "next/navigation";
+
 export default function ConfirmPage() {
+  const params = useSearchParams();
+  const router = useRouter();
+
+  const roast = params.get("roast") || "";
+  const size = params.get("size") || "";
+  const frequency = params.get("frequency") || "";
+  const price = params.get("price") || "";
+  const email = params.get("email") || "";
+  const emailStatus = params.get("emailStatus") || "";
+
   return (
     <main style={styles.page}>
       <div style={styles.shell}>
-        <div style={styles.card}>
+        <header style={styles.header}>
           <div style={styles.badge}>Standard Issue Coffee Co</div>
-
           <h1 style={styles.title}>Subscription Confirmed</h1>
+          <p style={styles.subtitle}>Your subscription details are below.</p>
 
-          <p style={styles.subtitle}>
-            Thank you for subscribing. This is a demo confirmation page.
-          </p>
+          {emailStatus === "sent_demo" && (
+            <div style={styles.banner}>
+              ✅ Confirmation email sent (demo) to <b>{email}</b> and{" "}
+              <b>info@standardissuecoffeeco.com</b>
+            </div>
+          )}
+        </header>
 
-          <p style={styles.note}>
-            No payment has been collected. This page exists to demonstrate a
-            complete subscription flow for portfolio purposes.
-          </p>
+        <section style={styles.card}>
+          <div style={styles.form}>
+            <div style={styles.summary}>
+              <div style={styles.summaryTop}>
+                <span style={styles.summaryPill}>
+                  {roast} · {size}
+                </span>
+                <span style={styles.summaryMuted}>{frequency} delivery</span>
+              </div>
 
-          <a href="/subscribe" style={styles.link}>
-            Back to Subscription
-          </a>
-        </div>
+              <div style={styles.priceRow}>
+                <div style={styles.price}>
+                  ${price} <span style={styles.per}>/ shipment</span>
+                </div>
+                <div style={styles.miniNote}>Demo confirmation</div>
+              </div>
+            </div>
+
+            <div style={styles.summary}>
+              <div style={styles.field}>
+                <div style={styles.label}>Email</div>
+                <div style={styles.controlLike}>{email}</div>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              style={styles.button}
+              onClick={() => router.push("/subscribe")}
+            >
+              Back to Subscription
+            </button>
+
+            <div style={styles.footerNote}>
+              Demo only — no payment collected yet. Next step: connect Stripe
+              Checkout and store subscriptions in a database.
+            </div>
+          </div>
+        </section>
       </div>
     </main>
   );
@@ -30,54 +81,133 @@ const styles = {
     minHeight: "100vh",
     background: "#f2ece6",
     padding: "48px 18px",
-    fontFamily:
-      "system-ui, -apple-system, Segoe UI, Roboto, sans-serif",
+    fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, sans-serif",
     color: "#1a1a1a",
   },
   shell: {
     maxWidth: 760,
     margin: "0 auto",
   },
+  header: {
+    marginBottom: 18,
+  },
+  badge: {
+    backgroundColor: "#5f021f",
+    color: "#ffffff",
+    padding: "6px 12px",
+    borderRadius: 999,
+    letterSpacing: "0.12em",
+    fontWeight: 600,
+    fontSize: 12,
+    marginBottom: 14,
+    display: "inline-block",
+    textTransform: "uppercase",
+  },
+  title: {
+    fontSize: 38,
+    margin: 0,
+    lineHeight: 1.1,
+  },
+  subtitle: {
+    marginTop: 10,
+    marginBottom: 0,
+    color: "rgba(0,0,0,0.65)",
+    fontSize: 16,
+  },
+  banner: {
+    marginTop: 12,
+    padding: "12px 14px",
+    borderRadius: 14,
+    background: "rgba(95, 2, 31, 0.08)",
+    border: "1px solid rgba(95, 2, 31, 0.18)",
+    fontSize: 13,
+  },
   card: {
     background: "#ffffff",
     borderRadius: 18,
     boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
     border: "1px solid rgba(0,0,0,0.08)",
-    padding: 28,
-    textAlign: "center",
+    padding: 22,
   },
-  badge: {
+  form: {
+    display: "grid",
+    gap: 16,
+  },
+  field: {
+    display: "grid",
+    gap: 8,
+  },
+  label: {
+    fontWeight: 700,
+    fontSize: 13,
+    letterSpacing: 0.3,
+  },
+  controlLike: {
+    width: "100%",
+    padding: "12px 12px",
+    fontSize: 16,
+    borderRadius: 12,
+    border: "1px solid rgba(0,0,0,0.18)",
+    background: "rgba(0,0,0,0.02)",
+  },
+  summary: {
+    padding: 14,
+    borderRadius: 14,
+    background: "rgba(0,0,0,0.04)",
+    border: "1px solid rgba(0,0,0,0.06)",
+  },
+  summaryTop: {
+    display: "flex",
+    justifyContent: "space-between",
+    gap: 10,
+    flexWrap: "wrap",
+    alignItems: "center",
+  },
+  summaryPill: {
+    fontSize: 13,
+    fontWeight: 700,
+  },
+  summaryMuted: {
+    color: "rgba(0,0,0,0.65)",
+    fontSize: 13,
+  },
+  priceRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "baseline",
+    marginTop: 10,
+    gap: 10,
+    flexWrap: "wrap",
+  },
+  price: {
+    fontSize: 28,
+    fontWeight: 800,
+  },
+  per: {
+    fontSize: 14,
+    fontWeight: 600,
+    color: "rgba(0,0,0,0.6)",
+  },
+  miniNote: {
+    fontSize: 12,
+    color: "rgba(0,0,0,0.6)",
+  },
+  button: {
+    marginTop: 6,
     backgroundColor: "#5f021f",
     color: "#ffffff",
-    padding: "6px 14px",
-    borderRadius: 999,
-    letterSpacing: "0.12em",
-    fontWeight: 600,
-    fontSize: 12,
-    marginBottom: 16,
-    display: "inline-block",
-    textTransform: "uppercase",
-  },
-  title: {
-    fontSize: 36,
-    margin: "0 0 12px",
-  },
-  subtitle: {
+    padding: "14px",
+    width: "100%",
+    borderRadius: 14,
     fontSize: 16,
-    color: "rgba(0,0,0,0.7)",
-    marginBottom: 14,
+    fontWeight: 800,
+    border: "none",
+    cursor: "pointer",
   },
-  note: {
-    fontSize: 14,
+  footerNote: {
+    fontSize: 12,
     color: "rgba(0,0,0,0.55)",
-    lineHeight: 1.5,
-    marginBottom: 22,
-  },
-  link: {
-    display: "inline-block",
-    marginTop: 8,
-    color: "#5f021f",
-    fontWeight: 700,
-    textDecoration: "none",
+    marginTop: 6,
+    lineHeight: 1.35,
   },
 };
