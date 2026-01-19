@@ -30,10 +30,7 @@ export default function SubscribePage() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  const selectedSize = useMemo(
-    () => SIZES.find((s) => s.id === size),
-    [size]
-  );
+  const selectedSize = useMemo(() => SIZES.find((s) => s.id === size), [size]);
   const selectedFreq = useMemo(
     () => FREQUENCIES.find((f) => f.id === frequency),
     [frequency]
@@ -56,6 +53,7 @@ export default function SubscribePage() {
 
     setLoading(true);
 
+    // Demo flow: navigate to confirm with query params
     const qs = new URLSearchParams({
       roast,
       size,
@@ -70,15 +68,18 @@ export default function SubscribePage() {
 
   return (
     <main style={styles.page}>
-      <div style={styles.shell}>
-        <header style={styles.header}>
-          <div style={styles.badge}>Standard Issue Coffee Co</div>
-          <h1 style={styles.title}>Subscription Signup</h1>
-          <p style={styles.subtitle}>
-            Portfolio demo: simulates secure email delivery via server API.
+      {/* HEADER BAND */}
+      <div style={styles.headerBand}>
+        <div style={styles.shell}>
+          <div style={styles.badge}>STANDARD ISSUE COFFEE CO</div>
+          <h1 style={styles.heroTitle}>Subscription Signup</h1>
+          <p style={styles.heroSubtitle}>
+            Portfolio demo: simulates secure email delivery via a server API.
           </p>
-        </header>
+        </div>
+      </div>
 
+      <div style={styles.shell}>
         <section style={styles.card}>
           <form onSubmit={onSubmit} style={styles.form}>
             <label style={styles.label}>
@@ -167,37 +168,54 @@ export default function SubscribePage() {
 const styles = {
   page: {
     minHeight: "100vh",
-    display: "flex",
-    justifyContent: "center",
-    padding: 24,
     background: "#f2ece6",
     color: "#1a1a1a",
     fontFamily:
       "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial",
   },
-  shell: { width: "100%", maxWidth: 720 },
-  header: { marginBottom: 16 },
+
+  shell: { width: "100%", maxWidth: 720, margin: "0 auto", padding: "0 24px" },
+
+  headerBand: {
+    padding: "42px 0 22px",
+    background:
+      "linear-gradient(180deg, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.00) 40%), #f2ece6",
+  },
+
   badge: {
     display: "inline-block",
-    padding: "6px 10px",
+    padding: "12px 18px",
     borderRadius: 999,
-    background: "rgba(139,0,0,.1)",
-    border: "1px solid rgba(139,0,0,.25)",
-    color: "#8b0000",
-    fontWeight: 700,
-    fontSize: 12,
+    background: "linear-gradient(180deg, #4b0014 0%, #2a000a 100%)",
+    color: "#ffffff",
+    fontWeight: 800,
+    letterSpacing: 3,
+    fontSize: 13,
+    textTransform: "uppercase",
+    boxShadow: "0 10px 20px rgba(0,0,0,.12)",
   },
-  title: {
-    margin: "10px 0 6px",
-    fontSize: 34,
-    color: "#8b0000",
+
+  heroTitle: {
+    margin: "18px 0 6px",
+    fontSize: 54,
+    lineHeight: 1.03,
+    fontWeight: 900,
+    letterSpacing: -1.2,
+    color: "#111111",
   },
-  subtitle: { margin: 0, opacity: 0.85 },
+
+  heroSubtitle: {
+    margin: 0,
+    fontSize: 18,
+    opacity: 0.85,
+    maxWidth: 560,
+  },
 
   card: {
+    marginTop: 18,
     border: "1px solid rgba(139,0,0,.18)",
-    borderRadius: 16,
-    padding: 16,
+    borderRadius: 18,
+    padding: 18,
     background: "#fff8f2",
     boxShadow: "0 10px 30px rgba(0,0,0,.08)",
   },
@@ -205,7 +223,7 @@ const styles = {
   form: { display: "grid", gap: 12 },
 
   label: {
-    fontWeight: 700,
+    fontWeight: 800,
     fontSize: 14,
     display: "grid",
     gap: 6,
@@ -213,22 +231,19 @@ const styles = {
   },
 
   select: {
-    padding: 12,
-    borderRadius: 12,
+    padding: 14,
+    borderRadius: 14,
     border: "1px solid rgba(139,0,0,.25)",
     background: "#ffffff",
     color: "#000000",
     fontSize: 16,
   },
 
-  option: {
-    color: "#000000",
-    background: "#ffffff",
-  },
+  option: { color: "#000000", background: "#ffffff" },
 
   input: {
-    padding: 12,
-    borderRadius: 12,
+    padding: 14,
+    borderRadius: 14,
     border: "1px solid rgba(139,0,0,.25)",
     background: "#ffffff",
     color: "#000000",
@@ -237,8 +252,8 @@ const styles = {
 
   summary: {
     border: "1px dashed rgba(139,0,0,.3)",
-    borderRadius: 12,
-    padding: 12,
+    borderRadius: 14,
+    padding: 14,
     background: "rgba(139,0,0,.04)",
   },
 
@@ -246,13 +261,10 @@ const styles = {
     display: "flex",
     justifyContent: "space-between",
     color: "#000000",
+    fontSize: 16,
   },
 
-  summaryNote: {
-    fontSize: 12,
-    opacity: 0.8,
-    marginTop: 6,
-  },
+  summaryNote: { fontSize: 12, opacity: 0.8, marginTop: 6 },
 
   error: {
     background: "rgba(139,0,0,.08)",
@@ -260,13 +272,13 @@ const styles = {
     padding: 10,
     borderRadius: 12,
     color: "#8b0000",
-    fontWeight: 700,
+    fontWeight: 800,
   },
 
   button: {
     marginTop: 6,
-    padding: "12px 14px",
-    borderRadius: 12,
+    padding: "14px 16px",
+    borderRadius: 14,
     border: "none",
     background: "#8b0000",
     color: "#f2ece6",
@@ -276,7 +288,8 @@ const styles = {
   },
 
   footer: {
-    marginTop: 14,
+    marginTop: 16,
+    paddingBottom: 28,
     fontSize: 12,
     opacity: 0.8,
     color: "#1a1a1a",
