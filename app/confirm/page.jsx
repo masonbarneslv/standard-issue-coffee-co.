@@ -1,17 +1,12 @@
-"use client";
+import Link from "next/link";
 
-import { useSearchParams, useRouter } from "next/navigation";
-
-export default function ConfirmPage() {
-  const params = useSearchParams();
-  const router = useRouter();
-
-  const roast = params.get("roast") || "";
-  const size = params.get("size") || "";
-  const frequency = params.get("frequency") || "";
-  const price = params.get("price") || "";
-  const email = params.get("email") || "";
-  const emailStatus = params.get("emailStatus") || "";
+export default function ConfirmPage({ searchParams }) {
+  const roast = searchParams?.roast ?? "";
+  const size = searchParams?.size ?? "";
+  const frequency = searchParams?.frequency ?? "";
+  const price = searchParams?.price ?? "";
+  const email = searchParams?.email ?? "";
+  const emailStatus = searchParams?.emailStatus ?? "";
 
   return (
     <main style={styles.page}>
@@ -54,13 +49,11 @@ export default function ConfirmPage() {
               </div>
             </div>
 
-            <button
-              type="button"
-              style={styles.button}
-              onClick={() => router.push("/subscribe")}
-            >
-              Back to Subscription
-            </button>
+            <Link href="/subscribe" style={{ textDecoration: "none" }}>
+              <button type="button" style={styles.button}>
+                Back to Subscription
+              </button>
+            </Link>
 
             <div style={styles.footerNote}>
               Demo only — no payment collected yet. Next step: connect Stripe
@@ -111,8 +104,6 @@ const styles = {
     color: "rgba(0,0,0,0.65)",
     fontSize: 16,
   },
-
-  // NEW: banner that matches your vibe
   banner: {
     marginTop: 12,
     padding: "12px 14px",
@@ -123,7 +114,6 @@ const styles = {
     fontSize: 13,
     lineHeight: 1.35,
   },
-
   card: {
     background: "#ffffff",
     borderRadius: 18,
@@ -144,8 +134,6 @@ const styles = {
     fontSize: 13,
     letterSpacing: 0.3,
   },
-
-  // Makes the displayed email look like an input box (non-editable)
   controlLike: {
     width: "100%",
     padding: "12px 12px",
@@ -154,7 +142,6 @@ const styles = {
     border: "1px solid rgba(0,0,0,0.18)",
     background: "rgba(0,0,0,0.02)",
   },
-
   summary: {
     marginTop: 4,
     padding: 14,
@@ -200,7 +187,7 @@ const styles = {
   },
   button: {
     marginTop: 6,
-    backgroundColor: "#5f021f", // SAME red as badge
+    backgroundColor: "#5f021f",
     color: "#ffffff",
     padding: "14px",
     width: "100%",
