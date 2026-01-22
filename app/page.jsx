@@ -47,8 +47,30 @@ export default function SubscribePage() {
     return Math.round(base * (1 - discount) * 100) / 100;
   }, [selectedSize, selectedFreq]);
 
-  function handleSubmit(e) {
+  /* ================================
+     ✅ ONLY UPDATED PART
+     ================================ */
+  async function handleSubmit(e) {
     e.preventDefault();
+
+    const res = await fetch("/api/subscribe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        roast,
+        size,
+        frequency,
+        price: price.toFixed(2),
+        email,
+      }),
+    });
+
+    const data = await res.json().catch(() => ({}));
+
+    if (!res.ok) {
+      alert(data?.error || "Email failed to send.");
+      return;
+    }
 
     const params = new URLSearchParams({
       roast,
@@ -56,16 +78,16 @@ export default function SubscribePage() {
       frequency,
       price: price.toFixed(2),
       email,
-      emailStatus: "sent_demo",
+      emailStatus: "sent",
     });
 
     router.push(`/confirm?${params.toString()}`);
   }
+  /* ================================ */
 
   return (
     <main style={styles.page}>
       <div style={styles.container}>
-        {/* TOP PILL — ONLY COLOR CHANGED */}
         <div style={styles.badge}>Standard Issue Coffee Co</div>
 
         <h1 style={styles.title}>Subscription Signup</h1>
@@ -76,7 +98,11 @@ export default function SubscribePage() {
         <form onSubmit={handleSubmit} style={styles.card}>
           <label style={styles.label}>
             Roast
-            <select style={styles.input} value={roast} onChange={(e) => setRoast(e.target.value)}>
+            <select
+              style={styles.input}
+              value={roast}
+              onChange={(e) => setRoast(e.target.value)}
+            >
               {ROASTS.map((r) => (
                 <option key={r.id} value={r.id}>
                   {r.name} — {r.note}
@@ -87,7 +113,11 @@ export default function SubscribePage() {
 
           <label style={styles.label}>
             Size
-            <select style={styles.input} value={size} onChange={(e) => setSize(e.target.value)}>
+            <select
+              style={styles.input}
+              value={size}
+              onChange={(e) => setSize(e.target.value)}
+            >
               {SIZES.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.label} — ${s.price}
@@ -98,7 +128,11 @@ export default function SubscribePage() {
 
           <label style={styles.label}>
             Frequency
-            <select style={styles.input} value={frequency} onChange={(e) => setFrequency(e.target.value)}>
+            <select
+              style={styles.input}
+              value={frequency}
+              onChange={(e) => setFrequency(e.target.value)}
+            >
               {FREQUENCIES.map((f) => (
                 <option key={f.id} value={f.id}>
                   {f.label} — {Math.round(f.discount * 100)}% off
@@ -107,7 +141,7 @@ export default function SubscribePage() {
             </select>
           </label>
 
-         <label style={styles.label}>
+          <label style={styles.label}>
             Email
             <input
               style={styles.input}
@@ -122,7 +156,9 @@ export default function SubscribePage() {
           <div style={styles.priceBox}>
             <div>
               <strong>Estimated price</strong>
-              <div style={styles.muted}>Demo only — no payment processed.</div>
+              <div style={styles.muted}>
+                Demo only — no payment processed.
+              </div>
             </div>
             <div style={styles.price}>${price.toFixed(2)}</div>
           </div>
@@ -133,7 +169,7 @@ export default function SubscribePage() {
         </form>
 
         <p style={styles.footer}>
-          Client form → API route → simulated emails → confirmation page.
+          Client form → API route → SendGrid → confirmation page.
         </p>
       </div>
     </main>
@@ -157,7 +193,7 @@ const styles = {
     display: "inline-block",
     padding: "6px 14px",
     borderRadius: 999,
-    background: "#5f021f",
+    background: TOP_PILL_COLOR,
     color: "#fff",
     fontSize: 12,
     fontWeight: 700,
@@ -196,24 +232,24 @@ const styles = {
     background: "#fff",
   },
   priceBox: {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  border: "1px dashed #e2c8c0",
-  borderRadius: 12,
-  padding: 12,
-  background: "#d3d3d3",
-  color: "#111",
-},
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    border: "1px dashed #e2c8c0",
+    borderRadius: 12,
+    padding: 12,
+    background: "#d3d3d3",
+    color: "#111",
+  },
   muted: {
     fontSize: 12,
     color: "#666",
   },
   price: {
-  fontWeight: 800,
-  fontSize: 18,
-  color: "#111",
-},
+    fontWeight: 800,
+    fontSize: 18,
+    color: "#111",
+  },
   button: {
     marginTop: 8,
     padding: "14px",
